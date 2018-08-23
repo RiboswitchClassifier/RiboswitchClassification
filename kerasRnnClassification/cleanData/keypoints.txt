@@ -1,0 +1,8 @@
+N - 1863
+Symbol  Equivalent Occurances  
+S       G          3
+Y       T          7
+R       G          7
+W       A          2
+H       A          2
+K       G          1
