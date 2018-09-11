@@ -6,6 +6,7 @@ import matplotlib
 matplotlib.use('pdf')
 import matplotlib.pyplot as plt
 from keras.layers import Dense, Dropout, LSTM, Embedding, Activation, Lambda, Bidirectional
+from sklearn.preprocessing import OneHotEncoder
 from keras.engine import Input, Model, InputSpec
 from keras.preprocessing.sequence import pad_sequences
 from keras.utils import plot_model
@@ -23,21 +24,21 @@ import pydot
 import graphviz
 
 EPCOHS = 10 #  an arbitrary cutoff, generally defined as "one pass over the entire dataset", used to separate training into distinct phases, which is useful for logging and periodic evaluation.
-BATCH_SIZE = 500 # a set of N samples. The samples in a batch are processed` independently, in parallel. If training, a batch results in only one update to the model.
+BATCH_SIZE = 128 # a set of N samples. The samples in a batch are processed` independently, in parallel. If training, a batch results in only one update to the model.
 INPUT_DIM = 5 # a vocabulary of 4 words in case of fnn sequence (ATCG)
 CLASSES = 16
 OUTPUT_DIM = 50 # Embedding output
 RNN_HIDDEN_DIM = 62
 DROPOUT_RATIO = 0.2 # proportion of neurones not used for training
-MAXLEN = 100 # cuts text after number of these characters in pad_sequences
+MAXLEN = 250 # cuts text after number of these characters in pad_sequences
 
 # checkpoint_dir ='checkpoints'
-checkpoint_dir ='newCheckpoints'
+checkpoint_dir ='newCheckpoints250'
 os.path.exists(checkpoint_dir)
 
 # input_file = 'cami_all_150.csv'
 # input_file = 'splice_new.csv'
-input_file = 'cleanData/16riboswitches.csv'
+input_file = 'cleanData/shuffled16riboswitches.csv'
 
 def letter_to_index(letter):
     _alphabet = 'ATGCN' # DRS
@@ -54,6 +55,7 @@ def encode(data):
     return encoded
 
 def load_data(test_split = 0.1, maxlen = MAXLEN):
+    onehot_encoder = OneHotEncoder(sparse=False)
     print ('Loading data...')
     df = pd.read_csv(input_file)
     df['sequence'] = df['sequence'].apply(lambda x: [int(letter_to_index(e)) for e in x])
@@ -83,7 +85,7 @@ def create_lstm(input_length, rnn_hidden_dim = RNN_HIDDEN_DIM, output_dim = OUTP
     model.add(Dropout(dropout))
     model.add(Dense(CLASSES, activation='softmax'))
 
-    model.compile('adam', 'sparse_categorical_crossentropy', metrics=['accuracy']) # binary_crossentropy
+    model.compile('adam', 'sparse_categorical_crossentropy', metrics=['accuracy']) # binary_crossentropy # categorical_crossentropy
     # # For a multi-class classification problem
     # model.compile(optimizer='rmsprop',
     #             loss='categorical_crossentropy',
@@ -122,25 +124,25 @@ if __name__ == '__main__':
     model.summary()
 
     # save checkpoint
-    filepath= checkpoint_dir + "/weightsRibo-improvement-{epoch:02d}-{val_acc:.2f}.hdf5"
+    filepath= checkpoint_dir + "/weightsRibo250-improvement-{epoch:02d}-{val_acc:.2f}.hdf5"
     checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=0, save_best_only=True, mode='max')
     callbacks_list = [checkpoint]
 
     print ('Fitting model...')
     print (np.unique(y_train))
-    class_weight = class_weight.compute_class_weight('balanced', np.unique(y_train), y_train)
+    class_weight = class_weight.compute_class_weight('balanced', np.unique(y_train), y_train) # y_ints = [y.argmax() for y in y_train]
     print(class_weight)
     history = model.fit(X_train, y_train, batch_size=BATCH_SIZE, class_weight=class_weight,
-        epochs=EPCOHS, callbacks=callbacks_list, validation_split = 0.1, verbose = 1)
+        epochs=EPCOHS, callbacks=callbacks_list, validation_split = 0.2, verbose = 1)
     # history = model.fit(X_train, y_train, batch_size=BATCH_SIZE, class_weight="auto", epochs=EPCOHS, callbacks=callbacks_list, validation_split = 0.1, verbose = 1)    
 
     # serialize model to JSON
     model_json = model.to_json()
-    with open("modelRibo.json", "w") as json_file:
+    with open("modelRibo250.json", "w") as json_file:
         json_file.write(model_json)
 
     # serialize weights to HDF5
-    model.save_weights("modelRibo.h5")
+    model.save_weights("modelRibo250.h5")
     print("Saved model to disk")
     
     # create_plots(history)
