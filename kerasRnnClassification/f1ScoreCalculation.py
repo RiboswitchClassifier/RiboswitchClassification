@@ -52,7 +52,6 @@ input_file_test = "cleanData/shuffled16riboswitches.csv"
 x, y, y_for_plotting = load_test(input_file_test)
 model = load_model('epochTuning/FinalmodelRibo10Epoch.h5')
 y_pred = model.predict_classes(x)
-
 # count_plot(y_for_plotting)
 
 print (y_pred.shape)
