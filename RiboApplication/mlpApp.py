@@ -44,8 +44,8 @@ Data = []
 Output = []
 
 #Exporting the CSV paths
-#Path = 'datasets/ribo_dataset_16_classes.csv'
-Path = 'datasets/ribo_dataset_24_classes.csv'
+#Path = 'datasets/NN/16_riboswitches.csv'
+Path = 'datasets/NN/24_riboswitches.csv'
 
 #Call function to Load Dataset
 Data, Output = Create_Data(Path, Data, Output)
@@ -62,7 +62,6 @@ Data_test, Output_test = Convert_to_Float(Data_test, Output_test)
 #Preprocessing the data
 scaler = StandardScaler()
 scaler.fit(Data_train)
-
 Data_train = scaler.transform(Data_train)
 Data_test = scaler.transform(Data_test)
 
@@ -73,8 +72,8 @@ mlp = MLPClassifier(solver='sgd',alpha=0.05,learning_rate='adaptive', hidden_lay
 mlp.fit(Data_train, Output_train)
 
 #Save the model to disk
-#filename = 'models/mlp16_model.plk'
-filename = 'models/mlp24_model.plk'
+#filename = 'models/NN/mlp_16_model.plk'
+filename = 'models/NN/mlp_24_model.plk'
 pickle.dump(mlp, open(filename, 'wb'))
 
 #Accuracy on Train and Test Sets
