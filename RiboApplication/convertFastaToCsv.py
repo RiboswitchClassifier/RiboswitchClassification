@@ -27,7 +27,10 @@ Peter Cock, MOAC, University of Warwick, UK
 #Open a FASTA input file of gene nucleotides sequences:
 #input_file = open('NC_005213.ffn', 'r')
 # input_file = open('purine.ffn', 'r')
-input_file = open('original_datasets/8_riboswitches_fasta/RF01725.fa', 'r')
+# output_file = open('purine_frequency.csv','w')
+input_file = open('original_datasets/8_riboswitches_fasta/RF02683.fa', 'r')
+output_file = open('original_datasets/8_riboswitches_csv/RF02683.csv','w')
+gene_class = 23
 
 #Note - you might like to also download the complete
 #genome nucleotide sequence, 'NC_005213.ffn' which is
@@ -41,8 +44,7 @@ input_file = open('original_datasets/8_riboswitches_fasta/RF01725.fa', 'r')
 #This is a universal format, you can read it
 #with any text editor - Microsoft Excel is
 #also a good choice.
-# output_file = open('purine_frequency.csv','w')
-output_file = open('processed_datasets/8_riboswitches_csv/RF01725.csv','w')
+
 
 #We will now write a header line to our output file.
 #
@@ -52,6 +54,7 @@ output_file = open('processed_datasets/8_riboswitches_csv/RF01725.csv','w')
 #i.e.
 #Gene (tab) A (tab) C (tab) G (tab) T (tab) Length (tab) CG%
 output_file.write('Gene\tSequence\tType\tA\tT\tG\tC\tAA\tAC\tAG\tAU\tCA\tCC\tCG\tCU\tGA\tGC\tGG\tGU\tUA\tUC\tUG\tUU\n')
+
 
 #We are going to need BioPython's SeqIO library, so we
 #must tell Python to load this ready for us:
@@ -64,7 +67,6 @@ for cur_record in SeqIO.parse(input_file, "fasta") :
     #Because we used the Bio.SeqIO parser, each record
     #is SeqRecord object which includes name and seq
     #properties.
-    gene_class = 16
     gene_name = cur_record.name
     gene_sequence = cur_record.seq
 
