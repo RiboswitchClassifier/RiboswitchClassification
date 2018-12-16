@@ -19,6 +19,7 @@ from keras import backend as K
 from keras.preprocessing import sequence
 from keras.models import model_from_json
 from keras.utils import to_categorical
+from sklearn.utils import shuffle
 import os
 import pydot
 import graphviz
@@ -41,18 +42,22 @@ MAXLEN = 250 # cuts text after number of these characters in pad_sequences
 
 # Create Directory for Checkpoints
 # checkpoint_dir ='epoch_tuning/RNN/16_checkpoints'
-checkpoint_dir ='epoch_tuning/RNN/24_checkpoints'
+# checkpoint_dir ='epoch_tuning/RNN/24_checkpoints'
+checkpoint_dir ='epoch_tuning/RNN/dev/24_checkpoints'
 os.path.exists(checkpoint_dir)
 
 # Path to save and load Model
 # model_file_json = "models/RNN/rnn_16_model.json"
 # model_file_h5 = "models/RNN/rnn_16_model.h5" 
-model_file_json = "models/RNN/rnn_24_model.json"
-model_file_h5 = "models/RNN/rnn_24_model.h5" 
+# model_file_json = "models/RNN/rnn_24_model.json"
+# model_file_h5 = "models/RNN/rnn_24_model.h5" 
+model_file_json = "models/RNN/dev/rnn_24_model.json"
+model_file_h5 = "models/RNN/dev/rnn_24_model.h5"
 
 # Path to Dataset
 # input_file = 'datasets/RNN/16_riboswitches_shuffled.csv'
-input_file = 'datasets/RNN/24_riboswitches_shuffled.csv'
+# input_file = 'datasets/RNN/24_riboswitches_shuffled.csv'
+input_file = 'processed_datasets/24_riboswitches_final.csv'
 
 # Just to check if things are working properly
 input_file_test = 'datasets/RNN/predition_sample.csv'
@@ -77,9 +82,9 @@ def encode(data):
 def load_test(input_file):
     print ('Loading data...')
     df = pd.read_csv(input_file)
-    df['sequence'] = df['sequence'].apply(lambda x: [int(letter_to_index(e)) for e in x])
+    df['Sequence'] = df['Sequence'].apply(lambda x: [int(letter_to_index(e)) for e in x])
     # df = df.reindex(np.random.permutation(df.index))
-    sample = np.array(df['sequence'].values[:len(df)])
+    sample = np.array(df['Sequence'].values[:len(df)])
     return pad_sequences(sample, maxlen=MAXLEN) 
 
 # Load Data to be used for training and validation
@@ -87,22 +92,22 @@ def load_data(test_split = 0.1, maxlen = MAXLEN):
     onehot_encoder = OneHotEncoder(sparse=False)
     print ('Loading data...')
     df = pd.read_csv(input_file)
-    df['sequence'] = df['sequence'].apply(lambda x: [int(letter_to_index(e)) for e in x])
+    df['Sequence'] = df['Sequence'].apply(lambda x: [int(letter_to_index(e)) for e in x])
     df = df.reindex(np.random.permutation(df.index))
     train_size = int(len(df) * (1 - test_split))
-    X_train = np.array(df['sequence'].values[:train_size])
+    X_train = np.array(df['Sequence'].values[:train_size])
     # print (X_train)
-    y_train = np.array(df['target'].values[:train_size])
+    y_train = np.array(df['Type'].values[:train_size])
     # y_train = encode(y_train)
-    X_test = np.array(df['sequence'].values[train_size:])
-    y_test = np.array(df['target'].values[train_size:])
+    X_test = np.array(df['Sequence'].values[train_size:])
+    y_test = np.array(df['Type'].values[train_size:])
     # y_test = encode(y_test)
     print('Average train sequence length: {}'.format(np.mean(list(map(len, X_train)), dtype=int)))
     print('Average test sequence length: {}'.format(np.mean(list(map(len, X_test)), dtype=int)))
     print (X_train.shape)
     print (y_train.shape)
     print (X_test.shape)
-    print (y_test.shape)    
+    print (y_test.shape)   
     return pad_sequences(X_train, maxlen=maxlen), y_train, pad_sequences(X_test, maxlen=maxlen), y_test
 
 # Create the RNN 
@@ -150,7 +155,8 @@ def create_plots(history):
 
 if __name__ == '__main__':
     # Load Datasets and Create RNN Schema
-    X_train, y_train, X_test, y_test = load_data()    
+    X_train, y_train, X_test, y_test = load_data()  
+    print (len(X_train[0]))   
     model = create_lstm(len(X_train[0])) 
     model.summary()
 
