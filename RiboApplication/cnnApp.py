@@ -1,5 +1,5 @@
 import tensorflow as tf
-import theano
+# import theano
 import pandas as pd
 import numpy as np
 import matplotlib
@@ -24,6 +24,8 @@ from sklearn.utils import shuffle
 import os
 import pydot
 import graphviz
+from sklearn.metrics import classification_report,confusion_matrix
+import roc
 
 # 16 and 24 classes gave similar metrics
 # Train Accuracy : 0.98
@@ -32,7 +34,7 @@ import graphviz
 # F1 Score : 0.98
 
 # Hyperparameters and Parameters
-EPOCHS = 10 #  an arbitrary cutoff, generally defined as "one pass over the entire dataset", used to separate training into distinct phases, which is useful for logging and periodic evaluation.
+EPOCHS = 20 #  an arbitrary cutoff, generally defined as "one pass over the entire dataset", used to separate training into distinct phases, which is useful for logging and periodic evaluation.
 BATCH_SIZE = 128 # a set of N samples. The samples in a batch are processed` independently, in parallel. If training, a batch results in only one update to the model.
 INPUT_DIM = 5 # a vocabulary of 5 words in case of genome sequence 'ATGCN'
 CLASSES = 24 # Number of Classes to Classify -> Change this to 16 when needed 
@@ -181,7 +183,7 @@ if __name__ == '__main__':
     history = model.fit(X_train, y_train, batch_size=BATCH_SIZE, class_weight=class_weight,
         epochs=EPOCHS, validation_split = 0.2, verbose = 1, shuffle=True)
     # history = model.fit(X_train, y_train, batch_size=BATCH_SIZE, class_weight="auto", epochs=EPOCHS, callbacks=callbacks_list, validation_split = 0.1, verbose = 1)    
-
+    plot_model(model, to_file='modelCNN.png')
     # # serialize model to JSON file format
     # model_json = model.to_json()
     # with open(model_file_json, "w") as json_file:
@@ -194,19 +196,37 @@ if __name__ == '__main__':
     # # create_plots(history)
     # # plot_model(model, to_file='modelRibo.png')
 
-    # Validate the model
-    X_test = np.expand_dims(X_test, axis=2)
-    loss, acc = model.evaluate(X_test, y_test, batch_size=BATCH_SIZE)
-    print('Test Loss:', loss)
-    print('Test Accuracy:', acc)
+    # # Validate the model
+    # X_test = np.expand_dims(X_test, axis=2)
+    # loss, acc = model.evaluate(X_test, y_test, batch_size=BATCH_SIZE)
+    # print('Test Loss:', loss)
+    # print('Test Accuracy:', acc)
 
-    # Did this to check if the right results were actually coming
-    X_T = load_test(input_file_test)
-    X_T = np.expand_dims(X_T, axis=2)
-    Y_T = model.predict_classes(X_T, verbose=0)
+    # # Did this to check if the right results were actually coming
+    # X_T = load_test(input_file_test)
+    # X_T = np.expand_dims(X_T, axis=2)
+    # Y_T = model.predict_classes(X_T, verbose=0)
 
-    # show the inputs and predicted outputs
-    print ("Predicted Outcomes")
-    print (Y_T) 
+    # # show the inputs and predicted outputs
+    # print ("Predicted Outcomes")
+    # print (Y_T) 
+
+    # X_test = np.expand_dims(X_test, axis=2)
+
+    # confusion_matrices = {}
+    # confusion_matrices["cnn"] = confusion_matrix(y_test,model.predict_classes(X_test)) 
+
+    # True_Positives, False_Negatives, All_Positives, False_Positives, True_Negatives, All_Negatives = roc.choose_from_confusion_matrix(confusion_matrices)
+
+    # Recall = roc.Rec(True_Positives,All_Positives)
+    # Precision = roc.Pre(True_Positives,False_Positives)
+    # Accuracy = roc.Acc(True_Positives,True_Negatives,False_Positives,False_Negatives)
+    # Precisionf = roc.Pre(True_Positives,False_Positives,average='False')
+    # Recallf = roc.Rec(True_Positives,All_Positives,average='False')
+    # F1 = roc.F(Precisionf,Recallf)
+    # print (F1);
+    # FPR = roc.fdr(False_Positives,All_Negatives)
+    # roc.display_graphs(Precision, Recall, Accuracy, F1, FPR)  
+    # print ("hi")   
 
 

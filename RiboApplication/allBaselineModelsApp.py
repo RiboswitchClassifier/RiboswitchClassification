@@ -7,8 +7,9 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import  RandomForestClassifier, AdaBoostClassifier
 from sklearn.naive_bayes import GaussianNB
 from sklearn.metrics import classification_report,confusion_matrix
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 import pickle
+import roc
 
 #Load Dataset
 def Create_Data(Path, Data, Output):
@@ -29,25 +30,28 @@ def Convert_to_Float(Data, Output):
     return Data, Output
 
 def construct_models(X_train, X_test, y_train, y_test):
+    confusion_matrices={}
     classifiers = [
+        # AdaBoostClassifier(),
+        # GaussianNB()  
         KNeighborsClassifier(),
         DecisionTreeClassifier(),
         RandomForestClassifier(),
-        MLPClassifier(),
-        AdaBoostClassifier(),
-        GaussianNB()
+        MLPClassifier()      
         ]
     for clf in  classifiers:
         model = clf.fit(X_train, y_train)
-        print("classifier", model)
-        print ("Accuracy on Train Set")
-        print (model.score(Data_train, Output_train))
-        print ("Accuracy on Test Set")
-        print (model.score(Data_test, Output_test))        
-        print ("Report")
-        print (classification_report(y_test,model.predict(X_test))) 
-        print ("Confusion Matrix")
-        print (confusion_matrix(y_test,model.predict(X_test))) 
+        # print("classifier", model)
+        # print ("Accuracy on Train Set")
+        # print (model.score(X_train, y_train))
+        # print ("Accuracy on Test Set")
+        # print (model.score(X_test, y_test))        
+        # print ("Report")
+        # print (classification_report(y_test,model.predict(X_test))) 
+        # print ("Confusion Matrix")
+        confusion_matrices[str(clf)] = confusion_matrix(y_test,model.predict(X_test))
+        # print (confusion_matrix(y_test,model.predict(X_test))) 
+    return confusion_matrices
 
 Data = []
 Output = []
@@ -74,7 +78,18 @@ scaler.fit(Data_train)
 Data_train = scaler.transform(Data_train)
 Data_test = scaler.transform(Data_test)
 
-construct_models(Data_train, Data_test, Output_train, Output_test)
+confu = construct_models(Data_train, Data_test, Output_train, Output_test)
+
+True_Positives, False_Negatives, All_Positives, False_Positives, True_Negatives, All_Negatives = roc.choose_from_confusion_matrix(confu)
+
+Recall = roc.Rec(True_Positives,All_Positives)
+Precision = roc.Pre(True_Positives,False_Positives)
+Accuracy = roc.Acc(True_Positives,True_Negatives,False_Positives,False_Negatives)
+Precisionf = roc.Pre(True_Positives,False_Positives,average='False')
+Recallf = roc.Rec(True_Positives,All_Positives,average='False')
+F1 = roc.F(Precisionf,Recallf)
+FPR = roc.fdr(False_Positives,All_Negatives)
+roc.display_graphs(Precision, Recall, Accuracy, F1, FPR)
 
 #Classification using tanh activation function
 # rf = MLPClassifier()   
