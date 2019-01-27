@@ -24,7 +24,9 @@ from sklearn.utils import shuffle
 import os
 import pydot
 import graphviz
+from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report,confusion_matrix
+from collections import Counter
 import roc
 
 # 16 and 24 classes gave similar metrics
@@ -34,7 +36,7 @@ import roc
 # F1 Score : 0.98
 
 # Hyperparameters and Parameters
-EPOCHS = 20 #  an arbitrary cutoff, generally defined as "one pass over the entire dataset", used to separate training into distinct phases, which is useful for logging and periodic evaluation.
+EPOCHS = 10 #  an arbitrary cutoff, generally defined as "one pass over the entire dataset", used to separate training into distinct phases, which is useful for logging and periodic evaluation.
 BATCH_SIZE = 128 # a set of N samples. The samples in a batch are processed` independently, in parallel. If training, a batch results in only one update to the model.
 INPUT_DIM = 5 # a vocabulary of 5 words in case of genome sequence 'ATGCN'
 CLASSES = 24 # Number of Classes to Classify -> Change this to 16 when needed 
@@ -90,14 +92,22 @@ def load_data(test_split = 0.1, maxlen = MAXLEN):
     df = pd.read_csv(input_file)
     df['Sequence'] = df['Sequence'].apply(lambda x: [int(letter_to_index(e)) for e in x])
     df = df.reindex(np.random.permutation(df.index))
-    train_size = int(len(df) * (1 - test_split))
-    X_train = np.array(df['Sequence'].values[:train_size])
-    # print (X_train)
-    y_train = np.array(df['Type'].values[:train_size])
-    # y_train = encode(y_train)
-    X_test = np.array(df['Sequence'].values[train_size:])
-    y_test = np.array(df['Type'].values[train_size:])
-    # y_test = encode(y_test)
+    # train_size = int(len(df) * (1 - test_split))
+    # X_train = np.array(df['Sequence'].values[:train_size])
+    # # print (X_train)
+    # y_train = np.array(df['Type'].values[:train_size])
+    # # y_train = encode(y_train)
+    # X_test = np.array(df['Sequence'].values[train_size:])
+    # y_test = np.array(df['Type'].values[train_size:])
+    # # y_test = encode(y_test)
+    X = np.array(df['Sequence'].values)
+    Y = np.array(df['Type'].values)
+    X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.1, stratify=Y) 
+    print ("Test Set")
+    print (y_test)
+    print (set(y_test))
+    print (Counter(y_test))
+    print (Counter(Y))
     print('Average train sequence length: {}'.format(np.mean(list(map(len, X_train)), dtype=int)))
     print('Average test sequence length: {}'.format(np.mean(list(map(len, X_test)), dtype=int)))
     print (X_train.shape)
@@ -183,7 +193,7 @@ if __name__ == '__main__':
     history = model.fit(X_train, y_train, batch_size=BATCH_SIZE, class_weight=class_weight,
         epochs=EPOCHS, validation_split = 0.2, verbose = 1, shuffle=True)
     # history = model.fit(X_train, y_train, batch_size=BATCH_SIZE, class_weight="auto", epochs=EPOCHS, callbacks=callbacks_list, validation_split = 0.1, verbose = 1)    
-    plot_model(model, to_file='modelCNN.png')
+    # plot_model(model, to_file='modelCNN.png')
     # # serialize model to JSON file format
     # model_json = model.to_json()
     # with open(model_file_json, "w") as json_file:
@@ -211,22 +221,23 @@ if __name__ == '__main__':
     # print ("Predicted Outcomes")
     # print (Y_T) 
 
-    # X_test = np.expand_dims(X_test, axis=2)
+    X_test = np.expand_dims(X_test, axis=2)
 
-    # confusion_matrices = {}
-    # confusion_matrices["cnn"] = confusion_matrix(y_test,model.predict_classes(X_test)) 
+    confusion_matrices = {}
+    confusion_matrices["cnn"] = confusion_matrix(y_test,model.predict_classes(X_test)) 
+    print (confusion_matrices["cnn"])
 
-    # True_Positives, False_Negatives, All_Positives, False_Positives, True_Negatives, All_Negatives = roc.choose_from_confusion_matrix(confusion_matrices)
+    True_Positives, False_Negatives, All_Positives, False_Positives, True_Negatives, All_Negatives = roc.choose_from_confusion_matrix(confusion_matrices)
 
-    # Recall = roc.Rec(True_Positives,All_Positives)
-    # Precision = roc.Pre(True_Positives,False_Positives)
-    # Accuracy = roc.Acc(True_Positives,True_Negatives,False_Positives,False_Negatives)
-    # Precisionf = roc.Pre(True_Positives,False_Positives,average='False')
-    # Recallf = roc.Rec(True_Positives,All_Positives,average='False')
-    # F1 = roc.F(Precisionf,Recallf)
-    # print (F1);
-    # FPR = roc.fdr(False_Positives,All_Negatives)
-    # roc.display_graphs(Precision, Recall, Accuracy, F1, FPR)  
-    # print ("hi")   
+    Recall = roc.Rec(True_Positives,All_Positives)
+    Precision = roc.Pre(True_Positives,False_Positives)
+    Accuracy = roc.Acc(True_Positives,True_Negatives,False_Positives,False_Negatives)
+    Precisionf = roc.Pre(True_Positives,False_Positives,average='False')
+    Recallf = roc.Rec(True_Positives,All_Positives,average='False')
+    F1 = roc.F(Precisionf,Recallf)
+    print (F1)
+    FPR = roc.fdr(False_Positives,All_Negatives)
+    roc.display_graphs(Precision, Recall, Accuracy, F1, FPR)  
+    print ("hi")   
 
 

@@ -34,9 +34,9 @@ def construct_models(X_train, X_test, y_train, y_test):
     classifiers = [
         # AdaBoostClassifier(),
         # GaussianNB()  
-        KNeighborsClassifier(),
-        DecisionTreeClassifier(),
-        RandomForestClassifier(),
+        # KNeighborsClassifier(),
+        # DecisionTreeClassifier(),
+        # RandomForestClassifier(),
         MLPClassifier()      
         ]
     for clf in  classifiers:
@@ -64,7 +64,7 @@ Path = 'datasets/NN/24_riboswitches.csv'
 Data, Output = Create_Data(Path, Data, Output)
 
 #Divide Dataset for training and testing
-Data_train, Data_test, Output_train, Output_test = train_test_split(Data, Output, test_size=0.2)
+Data_train, Data_test, Output_train, Output_test = train_test_split(Data, Output, test_size=0.2, stratify=Output)
 
 #Converting the train data into Float
 Data_train, Output_train = Convert_to_Float(Data_train, Output_train)
