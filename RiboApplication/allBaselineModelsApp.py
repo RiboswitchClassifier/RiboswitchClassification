@@ -7,6 +7,7 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import  RandomForestClassifier, AdaBoostClassifier
 from sklearn.naive_bayes import GaussianNB
 from sklearn.metrics import classification_report,confusion_matrix
+from sklearn import metrics
 # import matplotlib.pyplot as plt
 import pickle
 import roc
@@ -50,8 +51,14 @@ def construct_models(X_train, X_test, y_train, y_test):
         # print (classification_report(y_test,model.predict(X_test))) 
         # print ("Confusion Matrix")
         confusion_matrices[str(clf)] = confusion_matrix(y_test,model.predict(X_test))
+        roc_and_auc(confusion_matrices[str(clf)])
         # print (confusion_matrix(y_test,model.predict(X_test))) 
     return confusion_matrices
+
+def roc_and_auc(confusion_matrix_for_a_model):
+    print ("Confusion Matrix")
+    print (confusion_matrix_for_a_model)
+    print ("Wirte the Code Here Sir")
 
 Data = []
 Output = []
@@ -80,16 +87,35 @@ Data_test = scaler.transform(Data_test)
 
 confu = construct_models(Data_train, Data_test, Output_train, Output_test)
 
+# Ramit Calc 
 True_Positives, False_Negatives, All_Positives, False_Positives, True_Negatives, All_Negatives = roc.choose_from_confusion_matrix(confu)
 
-Recall = roc.Rec(True_Positives,All_Positives)
-Precision = roc.Pre(True_Positives,False_Positives)
-Accuracy = roc.Acc(True_Positives,True_Negatives,False_Positives,False_Negatives)
-Precisionf = roc.Pre(True_Positives,False_Positives,average='False')
-Recallf = roc.Rec(True_Positives,All_Positives,average='False')
-F1 = roc.F(Precisionf,Recallf)
-FPR = roc.fdr(False_Positives,All_Negatives)
-roc.display_graphs(Precision, Recall, Accuracy, F1, FPR)
+# Recall = roc.Rec(True_Positives,All_Positives)
+# Precision = roc.Pre(True_Positives,False_Positives)
+# Accuracy = roc.Acc(True_Positives,True_Negatives,False_Positives,False_Negatives)
+# Precisionf = roc.Pre(True_Positives,False_Positives,average='False')
+# Recallf, tprf = roc.Rec(True_Positives,All_Positives,average='False')
+# F1 = roc.F(Precisionf,Recallf)
+# FPR = roc.fdr(False_Positives,All_Negatives)
+# FPRf, fprf = roc.fdr(False_Positives,All_Negatives,average='False')
+# roc.display_graphs(Precision, Recall, Accuracy, F1, FPR)
+
+# print ("For ROC")
+# True Positive Rate (24 classes)
+# print (tprf)
+# False Positive Rate (24 classes)
+# print (fprf)
+# print (len(tprf[0]))
+# print (len(fprf[0]))
+
+# Ramit Calc End 
+
+# for x, y in zip(fprf, tprf):
+#     print (x)
+#     print (y)
+#     roc_auc = metrics.auc(x, y)
+
+# print (roc_auc)
 
 #Classification using tanh activation function
 # rf = MLPClassifier()   

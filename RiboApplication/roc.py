@@ -91,7 +91,7 @@ def Rec(x,y,average="True"):
             avg_recall.append(sum_recall/len(i))
         for i,j in zip(names,avg_recall):
             Recal[i.split('C')[0]]=j
-    return Recal
+    return Recal, recal
 
 def Pre(x,y,average="True"):
     Recal={}
@@ -237,7 +237,7 @@ def fdr(x,y,average="True"):
         for i,j in zip(names,avg_recall):
             Recal[i.split('C')[0]]=j
 
-    return Recal
+    return Recal, recal
 
 def display_graphs(Precision, Recall, Accuracy, F1, FPR):
     metric=[]

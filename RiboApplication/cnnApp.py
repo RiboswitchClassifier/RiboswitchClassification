@@ -238,6 +238,7 @@ if __name__ == '__main__':
     print (F1)
     FPR = roc.fdr(False_Positives,All_Negatives)
     roc.display_graphs(Precision, Recall, Accuracy, F1, FPR)  
-    print ("hi")   
+    print ("hi")  
+   # tpr-> and fpr-> 1 - specifty 
 
 
