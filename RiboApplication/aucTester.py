@@ -1,14 +1,76 @@
 import numpy as np
-from sklearn import metrics
-y = np.array([1, 1, 2, 2])
-pred = np.array([0.1, 0.4, 0.35, 0.8])
-fpr, tpr, thresholds = metrics.roc_curve(y, pred, pos_label=23)
-fpr = [0.012096774193548387, 0.036896877956480605, 0.02406199021207178, 0.02662862577270566, 0.007681990001219364, 0.0010931616664642293, 0.017272965192358023, 0.0009642039291310112, 0.0, 0.011413748378728923, 0.0003572704537334762, 0.002174438270113554, 0.0, 0.00023872045834328001, 0.0, 0.0, 0.005236877359639508, 0.0010857763300760044, 0.00011957431543704412, 0.004767879548306148, 0.002202104232933692, 0.0007249003262051468, 0.0020344662517951173, 0.00047841167324482717]
-tpr = [0.8938193343898574, 0.8611111111111112, 0.7861205915813424, 0.9131782945736434, 0.75, 0.8294117647058824, 0.8260188087774295, 0.897196261682243, 0.967032967032967, 0.8550488599348535,
-0.75, 0.8275862068965517, 1.0, 1.0, 1.0, 0.75, 0.6962025316455697, 0.8421052631578947, 1.0, 0.9405940594059405, 0.9272727272727272, 0.9457364341085271, 0.6666666666666666, 0.5319148936170213]
-fpr.sort()
-tpr.sort()
-print (fpr)
-print (tpr)
-# print (thresholds)
-print (metrics.auc(fpr, tpr))
+import matplotlib.pyplot as plt
+from itertools import cycle
+from sklearn.ensemble import  RandomForestClassifier, AdaBoostClassifier
+from sklearn.neural_network import MLPClassifier
+from sklearn import svm, datasets
+from sklearn.metrics import roc_curve, auc
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import label_binarize
+from sklearn.multiclass import OneVsRestClassifier
+from sklearn.tree import DecisionTreeClassifier
+from scipy import interp
+
+plt.figure()
+lw = 2
+
+# Import some data to play with
+iris = datasets.load_iris()
+X = iris.data
+y = iris.target
+
+
+
+# Binarize the output
+y = label_binarize(y, classes=[0, 1, 2])
+n_classes = y.shape[1]
+print (n_classes)
+
+# Add noisy features to make the problem harder
+random_state = np.random.RandomState(0)
+n_samples, n_features = X.shape
+X = np.c_[X, random_state.randn(n_samples, 200 * n_features)]
+
+# shuffle and split training and test sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=.5,
+                                                    random_state=0)
+
+
+# Learn to predict each class against the other
+# classifier = OneVsRestClassifier(svm.SVC(kernel='linear', probability=True,
+#                                  random_state=random_state))  
+classifier = OneVsRestClassifier(MLPClassifier(random_state=random_state))                                                                 
+# y_score = classifier.fit(X_train, y_train).decision_function(X_test)
+y_score = classifier.fit(X_train, y_train).predict_proba(X_test)
+
+
+# Compute ROC curve and ROC area for each class
+# fpr = dict()
+# tpr = dict()
+# roc_auc = dict()
+# for i in range(n_classes):
+#     fpr[i], tpr[i], _ = roc_curve(y_test[:, i], y_score[:, i])
+#     roc_auc[i] = auc(fpr[i], tpr[i])
+
+# print (roc_auc)
+
+# fpr = dict()
+# tpr = dict()
+# roc_auc = dict()
+# for i in range(n_classes):
+#     fpr[i], tpr[i], _ = roc_curve(y_test[:, i], y_score[:, i])
+#     roc_auc[i] = auc(fpr[i], tpr[i])
+# colors = cycle(['blue', 'red', 'green'])
+# for i, color in zip(range(n_classes), colors):
+#     plt.plot(fpr[i], tpr[i], color=color, lw=lw,
+#              label='ROC curve of class {0} (area = {1:0.2f})'
+#              ''.format(i, roc_auc[i]))
+
+# plt.plot([0, 1], [0, 1], 'k--', lw=lw)
+# plt.xlim([-0.05, 1.0])
+# plt.ylim([0.0, 1.05])
+# plt.xlabel('False Positive Rate')
+# plt.ylabel('True Positive Rate')
+# plt.title('Receiver operating characteristic for multi-class data')
+# plt.legend(loc="lower right")
+# plt.show()
