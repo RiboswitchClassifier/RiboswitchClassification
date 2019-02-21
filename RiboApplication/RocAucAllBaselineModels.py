@@ -148,17 +148,16 @@ def generate_roc(X_train, X_test, y_train, y_test, y_test_bin):
     for clf,name in  zip(classifiers,names):
         filename = 'pickled_models/' + name + '.pkl'
         model = pickle.load(open(filename, 'rb'))
-        print (name)
-        print ("Accuracy on Test Set")
+        print ("Accuracy on Test Set : " + name)
         print (model.score(X_test, y_test))         
-        # print ("Report")
-        # print (classification_report(y_test,model.predict(X_test))) 
+        print ("Report : " + name)
+        print (classification_report(y_test,model.predict(X_test))) 
         # print ("Confusion Matrix")
-        y_score = model.predict_proba(X_test)
         # confusion_matrices[str(clf)] = confusion_matrix(y_test,model.predict(X_test))
         # roc_and_auc(confusion_matrices[str(clf)])
-        # print (confusion_matrix(y_test,model.predict(X_test))) 
-        calculate_roc(y_test_bin, y_score, name)
+        # print (confusion_matrix(y_test,model.predict(X_test)))
+        # y_score = model.predict_proba(X_test) 
+        # calculate_roc(y_test_bin, y_score, name)
 
 def roc_and_auc(confusion_matrix_for_a_model):
     print ("GG")
