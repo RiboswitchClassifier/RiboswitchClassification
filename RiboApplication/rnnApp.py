@@ -3,7 +3,7 @@ import theano
 import pandas as pd
 import numpy as np
 import matplotlib
-matplotlib.use('pdf')
+# matplotlib.use('pdf')
 import matplotlib.pyplot as plt
 from keras.layers import Dense, Dropout, LSTM, Embedding, Activation, Lambda, Bidirectional
 from sklearn.preprocessing import OneHotEncoder
@@ -20,8 +20,11 @@ from keras.preprocessing import sequence
 from keras.models import model_from_json
 from keras.utils import to_categorical
 from sklearn.utils import shuffle
+from sklearn.metrics import classification_report,confusion_matrix
 import os
 import pydot
+from keras.models import load_model
+import aucRoc
 import graphviz
 
 # 16 and 24 classes gave similar metrics
@@ -52,12 +55,12 @@ os.path.exists(checkpoint_dir)
 # model_file_json = "models/RNN/rnn_24_model.json"
 # model_file_h5 = "models/RNN/rnn_24_model.h5" 
 model_file_json = "models/RNN/dev/rnn_24_model.json"
-model_file_h5 = "models/RNN/dev/rnn_24_model.h5"
+model_file_h5 = "models/rnn_24_model.h5"
 
 # Path to Dataset
 # input_file = 'datasets/RNN/16_riboswitches_shuffled.csv'
 # input_file = 'datasets/RNN/24_riboswitches_shuffled.csv'
-input_file = 'processed_datasets/24_riboswitches_final.csv'
+input_file = 'processed_datasets/24_riboswitches_final_test.csv'
 
 # Just to check if things are working properly
 input_file_test = 'datasets/RNN/predition_sample.csv'
@@ -88,27 +91,31 @@ def load_test(input_file):
     return pad_sequences(sample, maxlen=MAXLEN) 
 
 # Load Data to be used for training and validation
-def load_data(test_split = 0.1, maxlen = MAXLEN):
+def load_data(test_split = 0.0, maxlen = MAXLEN):
     onehot_encoder = OneHotEncoder(sparse=False)
     print ('Loading data...')
     df = pd.read_csv(input_file)
     df['Sequence'] = df['Sequence'].apply(lambda x: [int(letter_to_index(e)) for e in x])
     df = df.reindex(np.random.permutation(df.index))
-    train_size = int(len(df) * (1 - test_split))
-    X_train = np.array(df['Sequence'].values[:train_size])
-    # print (X_train)
-    y_train = np.array(df['Type'].values[:train_size])
-    # y_train = encode(y_train)
-    X_test = np.array(df['Sequence'].values[train_size:])
-    y_test = np.array(df['Type'].values[train_size:])
+    # train_size = int(len(df) * (1 - test_split))
+    # X_train = np.array(df['Sequence'].values[:train_size])
+    # # print (X_train)
+    # y_train = np.array(df['Type'].values[:train_size])
+    # # y_train = encode(y_train)
+    # X_test = np.array(df['Sequence'].values[train_size:])
+    # y_test = np.array(df['Type'].values[train_size:])
+    X = np.array(df['Sequence'].values)
+    Y = np.array(df['Type'].values)
     # y_test = encode(y_test)
-    print('Average train sequence length: {}'.format(np.mean(list(map(len, X_train)), dtype=int)))
-    print('Average test sequence length: {}'.format(np.mean(list(map(len, X_test)), dtype=int)))
-    print (X_train.shape)
-    print (y_train.shape)
-    print (X_test.shape)
-    print (y_test.shape)   
-    return pad_sequences(X_train, maxlen=maxlen), y_train, pad_sequences(X_test, maxlen=maxlen), y_test
+    # print('Average train sequence length: {}'.format(np.mean(list(map(len, X_train)), dtype=int)))
+    # print('Average test sequence length: {}'.format(np.mean(list(map(len, X_test)), dtype=int)))
+    # print (X_train.shape)
+    # print (y_train.shape)
+    # print (X_test.shape)
+    # print (y_test.shape)   
+    # return pad_sequences(X_train, maxlen=maxlen), y_train, pad_sequences(X_test, maxlen=maxlen), y_test
+    return pad_sequences(X, maxlen=maxlen), Y
+
 
 # Create the RNN 
 def create_lstm(input_length, rnn_hidden_dim = RNN_HIDDEN_DIM, output_dim = OUTPUT_DIM, input_dim = INPUT_DIM, dropout = DROPOUT_RATIO):
@@ -155,48 +162,71 @@ def create_plots(history):
 
 if __name__ == '__main__':
     # Load Datasets and Create RNN Schema
-    X_train, y_train, X_test, y_test = load_data()  
-    print (len(X_train[0]))   
-    model = create_lstm(len(X_train[0])) 
-    model.summary()
-
-    # Save Checkpoint
-    filepath= checkpoint_dir + "/weights-improvement-{epoch:02d}-{val_acc:.2f}.hdf5"
-    checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=0, save_best_only=True, mode='max')
-    callbacks_list = [checkpoint]
-
-    print ('Fitting model...')
-    print (np.unique(y_train))
-    class_weight = class_weight.compute_class_weight('balanced', np.unique(y_train), y_train) # y_ints = [y.argmax() for y in y_train]
-    print ("Class Weights")
-    print(class_weight)
-    history = model.fit(X_train, y_train, batch_size=BATCH_SIZE, class_weight=class_weight,
-        epochs=EPOCHS, callbacks=callbacks_list, validation_split = 0.2, verbose = 1, shuffle=True)
-    # history = model.fit(X_train, y_train, batch_size=BATCH_SIZE, class_weight="auto", epochs=EPOCHS, callbacks=callbacks_list, validation_split = 0.1, verbose = 1)    
-
-    # serialize model to JSON file format
-    model_json = model.to_json()
-    with open(model_file_json, "w") as json_file:
-        json_file.write(model_json)
-
-    # serialize weights to HDF5 file format
-    model.save_weights(model_file_h5)
-    print("Saved model to disk")
+    # X_train, y_train, X_test, y_test = load_data()  
+    # print (len(X_train[0]))   
+    X_test, y_test = load_data(input_file) 
     
-    # create_plots(history)
-    # plot_model(model, to_file='modelRibo.png')
+
+
+
+
+    # X_train, y_train = load_data(input_file)  
+    # model = create_lstm(len(X_train[0])) 
+    # model.summary()
+
+    # # Save Checkpoint
+    # filepath= checkpoint_dir + "/weights-improvement-{epoch:02d}-{val_acc:.2f}.hdf5"
+    # checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=0, save_best_only=True, mode='max')
+    # callbacks_list = [checkpoint]
+
+    # print ('Fitting model...')
+    # print (np.unique(y_train))
+    # class_weight = class_weight.compute_class_weight('balanced', np.unique(y_train), y_train) # y_ints = [y.argmax() for y in y_train]
+    # print ("Class Weights")
+    # print(class_weight)
+    # history = model.fit(X_train, y_train, batch_size=BATCH_SIZE, class_weight=class_weight,
+    #     epochs=EPOCHS, callbacks=callbacks_list, validation_split = 0.1, verbose = 1, shuffle=True)
+    # # history = model.fit(X_train, y_train, batch_size=BATCH_SIZE, class_weight="auto", epochs=EPOCHS, callbacks=callbacks_list, validation_split = 0.1, verbose = 1)    
+
+    # # serialize model to JSON file format
+    # # model_json = model.to_json()
+    # # with open(model_file_json, "w") as json_file:
+    # #     json_file.write(model_json)
+
+    # # serialize weights to HDF5 file format
+    # # model.save_weights(model_file_h5)
+    # model.save(model_file_h5) 
+    # # print("Saved model to disk")
+    # print("Saved model to disk")
+    
+    # # create_plots(history)
+    # # plot_model(model, to_file='modelRibo.png')
+
+
 
     # Validate the model
-    loss, acc = model.evaluate(X_test, y_test, batch_size=BATCH_SIZE)
-    print('Test Loss:', loss)
-    print('Test Accuracy:', acc)
+    model_file_h5 = "models/Rnn_24_model.h5"
+    # X_test = np.expand_dims(X_test, axis=2)
+    model_loaded = load_model(model_file_h5)
+    # print ("GG")
+    # loss, acc = model_loaded.evaluate(X_test, y_test, batch_size=BATCH_SIZE)
+    # print('Test Loss:', loss)
+    # print('Test Accuracy:', acc)
 
-    # Did this to check if the right results were actually coming
-    X_T = load_test(input_file_test)
-    Y_T = model.predict_classes(X_T, verbose=0)
+    # # Did this to check if the right results were actually coming
+    # X_T = load_test(input_file_test)
+    # Y_T = model.predict_classes(X_T, verbose=0)
 
-    # show the inputs and predicted outputs
-    print ("Predicted Outcomes")
-    print (Y_T) 
+    # # show the inputs and predicted outputs
+    # print ("Predicted Outcomes")
+    # print (Y_T) 
+
+    # print ("Classification Report")
+    # print (classification_report(y_test,model_loaded.predict_classes(X_test))) 
+    print ("Predicted Score")
+    y_score = model_loaded.predict_proba(X_test) 
+    print (y_score)
+
+    aucRoc.calculate_roc(y_test, y_score, "RnnClassifierModel")
 
 

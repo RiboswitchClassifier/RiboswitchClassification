@@ -137,11 +137,11 @@ def construct_models(X_train, X_test, y_train, y_test, y_test_bin):
 def generate_roc(X_train, X_test, y_train, y_test, y_test_bin):
     confusion_matrices={}
     classifiers = [
-        AdaBoostClassifier(),
-        GaussianNB(),  
-        KNeighborsClassifier(),
-        DecisionTreeClassifier(),
-        RandomForestClassifier(),
+        # AdaBoostClassifier(),
+        # GaussianNB(),  
+        # KNeighborsClassifier(),
+        # DecisionTreeClassifier(),
+        # RandomForestClassifier(),
         MLPClassifier()   
         ]
     names = ["AdaBoostClassifierModel","GaussianNBModel","KNeighborsClassifierModel","DecisionTreeClassifierModel","RandomForestClassifierModel","MLPClassifierModel"]
@@ -151,6 +151,8 @@ def generate_roc(X_train, X_test, y_train, y_test, y_test_bin):
         print ("Accuracy on Test Set : " + name)
         print (model.score(X_test, y_test))         
         print ("Report : " + name)
+        print (y_test)
+        print (model.predict(X_test))
         print (classification_report(y_test,model.predict(X_test))) 
         # print ("Confusion Matrix")
         # confusion_matrices[str(clf)] = confusion_matrix(y_test,model.predict(X_test))
