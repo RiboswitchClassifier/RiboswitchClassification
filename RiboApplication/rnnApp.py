@@ -34,7 +34,7 @@ import graphviz
 # F1 Score : 0.98
 
 # Hyperparameters and Parameters
-EPOCHS = 10 #  an arbitrary cutoff, generally defined as "one pass over the entire dataset", used to separate training into distinct phases, which is useful for logging and periodic evaluation.
+EPOCHS = 25 #  an arbitrary cutoff, generally defined as "one pass over the entire dataset", used to separate training into distinct phases, which is useful for logging and periodic evaluation.
 BATCH_SIZE = 128 # a set of N samples. The samples in a batch are processed` independently, in parallel. If training, a batch results in only one update to the model.
 INPUT_DIM = 5 # a vocabulary of 5 words in case of genome sequence 'ATGCN'
 CLASSES = 24 # Number of Classes to Classify -> Change this to 16 when needed 
@@ -196,22 +196,21 @@ if __name__ == '__main__':
     # # serialize weights to HDF5 file format
     # # model.save_weights(model_file_h5)
     # model.save(model_file_h5) 
-    # # print("Saved model to disk")
     # print("Saved model to disk")
+    # # print("Saved model to disk")
     
-    # # create_plots(history)
-    # # plot_model(model, to_file='modelRibo.png')
+    # # # create_plots(history)
+    # # # plot_model(model, to_file='modelRibo.png')
 
 
 
     # Validate the model
-    model_file_h5 = "models/Rnn_24_model.h5"
     # X_test = np.expand_dims(X_test, axis=2)
     model_loaded = load_model(model_file_h5)
-    # print ("GG")
-    # loss, acc = model_loaded.evaluate(X_test, y_test, batch_size=BATCH_SIZE)
-    # print('Test Loss:', loss)
-    # print('Test Accuracy:', acc)
+    print ("GG")
+    loss, acc = model_loaded.evaluate(X_test, y_test, batch_size=BATCH_SIZE)
+    print('Test Loss:', loss)
+    print('Test Accuracy:', acc)
 
     # # Did this to check if the right results were actually coming
     # X_T = load_test(input_file_test)
@@ -221,8 +220,8 @@ if __name__ == '__main__':
     # print ("Predicted Outcomes")
     # print (Y_T) 
 
-    # print ("Classification Report")
-    # print (classification_report(y_test,model_loaded.predict_classes(X_test))) 
+    print ("Classification Report")
+    print (classification_report(y_test,model_loaded.predict_classes(X_test))) 
     print ("Predicted Score")
     y_score = model_loaded.predict_proba(X_test) 
     print (y_score)
