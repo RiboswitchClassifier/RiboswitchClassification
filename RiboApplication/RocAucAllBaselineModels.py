@@ -110,7 +110,7 @@ def create_aoc_table(overall):
     df = pd.DataFrame(overall.T)
     print ("The generated dataframe")
     print (df)
-    writer = pd.ExcelWriter('excelTables/modelsAocValuesTable.xlsx')
+    writer = pd.ExcelWriter('excelTables/sklearnAocValuesTable.xlsx')
     df.to_excel(writer,'sklearn')
     writer.save() 
 

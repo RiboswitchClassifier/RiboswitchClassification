@@ -207,10 +207,10 @@ if __name__ == '__main__':
     # Validate the model
     # X_test = np.expand_dims(X_test, axis=2)
     model_loaded = load_model(model_file_h5)
-    print ("GG")
-    loss, acc = model_loaded.evaluate(X_test, y_test, batch_size=BATCH_SIZE)
-    print('Test Loss:', loss)
-    print('Test Accuracy:', acc)
+    # print ("GG")
+    # loss, acc = model_loaded.evaluate(X_test, y_test, batch_size=BATCH_SIZE)
+    # print('Test Loss:', loss)
+    # print('Test Accuracy:', acc)
 
     # # Did this to check if the right results were actually coming
     # X_T = load_test(input_file_test)
@@ -220,8 +220,8 @@ if __name__ == '__main__':
     # print ("Predicted Outcomes")
     # print (Y_T) 
 
-    print ("Classification Report")
-    print (classification_report(y_test,model_loaded.predict_classes(X_test))) 
+    # print ("Classification Report")
+    # print (classification_report(y_test,model_loaded.predict_classes(X_test))) 
     print ("Predicted Score")
     y_score = model_loaded.predict_proba(X_test) 
     print (y_score)
