@@ -16,11 +16,11 @@ from sklearn.multiclass import OneVsRestClassifier
 import numpy as np
 from scipy import interp
 
-# import matplotlib.pyplot as plt
+# import matplotlib.pyplot as #plt
 import pickle
 # import roc
 
-plt.figure()
+#plt.figure()
 lw = 2
 
 #Load Dataset
@@ -41,7 +41,9 @@ def Convert_to_Float(Data, Output):
         Output[i]= int(Output[i])
     return Data, Output
 
+
 def calculate_roc(y_test, y_score, name):
+    each_class = [];
     n_classes = 24
     fpr = dict()
     tpr = dict()
@@ -49,8 +51,8 @@ def calculate_roc(y_test, y_score, name):
     for i in range(n_classes):
         fpr[i], tpr[i], _ = roc_curve(y_test[:, i], y_score[:, i])
         roc_auc[i] = auc(fpr[i], tpr[i])
-    print ("ROC_AUC")
-    print (roc_auc)
+    # print ("ROC_AUC")
+    # print (roc_auc)
 
     # Compute micro-average ROC curve and ROC area
     fpr["micro"], tpr["micro"], _ = roc_curve(y_test.ravel(), y_score.ravel())
@@ -70,15 +72,15 @@ def calculate_roc(y_test, y_score, name):
     tpr["macro"] = mean_tpr
     roc_auc["macro"] = auc(fpr["macro"], tpr["macro"])
 
-    plt.plot(fpr["micro"], tpr["micro"],
-            label='micro-average ROC curve (area = {0:0.2f})'
-                ''.format(roc_auc["micro"]),
-            color='deeppink', linestyle=':', linewidth=4)
+    #plt.plot(fpr["micro"], tpr["micro"],
+            # label='micro-average ROC curve (area = {0:0.2f})'
+            #     ''.format(roc_auc["micro"]),
+            # color='deeppink', linestyle=':', linewidth=4)
 
-    plt.plot(fpr["macro"], tpr["macro"],
-            label='macro-average ROC curve (area = {0:0.2f})'
-                ''.format(roc_auc["macro"]),
-            color='navy', linestyle=':', linewidth=4)
+    #plt.plot(fpr["macro"], tpr["macro"],
+            # label='macro-average ROC curve (area = {0:0.2f})'
+            #     ''.format(roc_auc["macro"]),
+            # color='navy', linestyle=':', linewidth=4)
 
     colors = cycle([
         '#aa65bb', '#c8a581', '#701f57','#f5aed0', '#7288ee', '#f6bcba',
@@ -86,17 +88,30 @@ def calculate_roc(y_test, y_score, name):
         '#257d9d','#2c0ec4','#441401','#6b3ae9','#576377','#18713a',
         '#357ad1','#5e8282','#fc0525','#120c63','#FF5733'
     ])
+    each_class.append(round(roc_auc["micro"], 2))
+    each_class.append(round(roc_auc["macro"], 2))
     for i, color in zip(range(n_classes), colors):
-        plt.plot(fpr[i], tpr[i], color=color, lw=lw,label='ROC curve of class {0} (area = {1:0.2f})'.format(i, roc_auc[i]))
+        #plt.plot(fpr[i], tpr[i], color=color, lw=lw,label='ROC curve of class {0} (area = {1:0.2f})'.format(i, roc_auc[i]))
+        each_class.append(round(roc_auc[i], 2))
+    #plt.plot([0, 1], [0, 1], 'k--', lw=lw)
+    #plt.xlim([-0.05, 1.0])
+    #plt.ylim([0.0, 1.05])
+    #plt.xlabel('False Positive Rate')
+    #plt.ylabel('True Positive Rate')
+    #plt.title('Receiver operating characteristic for multi-class data : ' + name)
+    #plt.legend(loc="lower right")
+    #plt.show()
+    return each_class
 
-    plt.plot([0, 1], [0, 1], 'k--', lw=lw)
-    plt.xlim([-0.05, 1.0])
-    plt.ylim([0.0, 1.05])
-    plt.xlabel('False Positive Rate')
-    plt.ylabel('True Positive Rate')
-    plt.title('Receiver operating characteristic for multi-class data : ' + name)
-    plt.legend(loc="lower right")
-    plt.show()
+def create_aoc_table(overall):
+    overall = np.array(overall)
+    df = pd.DataFrame(overall.T)
+    print ("The generated dataframe")
+    print (df)
+    # writer = pd.ExcelWriter('excelTables/PythonExport.xlsx')
+    # df.to_excel(writer,'Sheet1')
+    # writer.save() 
+
 
 def construct_models(X_train, X_test, y_train, y_test, y_test_bin):
     confusion_matrices={}
@@ -115,6 +130,7 @@ def construct_models(X_train, X_test, y_train, y_test, y_test_bin):
         # OneVsRestClassifier(MLPClassifier(max_iter=100))    
         ]
     names = ["AdaBoostClassifierModel","GaussianNBModel","KNeighborsClassifierModel","DecisionTreeClassifierModel","RandomForestClassifierModel","MLPClassifierModel"]
+    overall = [];
     for clf,name in  zip(classifiers,names):
         model = clf.fit(X_train, y_train)
         # print("classifier", model)
@@ -132,34 +148,37 @@ def construct_models(X_train, X_test, y_train, y_test, y_test_bin):
         # confusion_matrices[str(clf)] = confusion_matrix(y_test,model.predict(X_test))
         # roc_and_auc(confusion_matrices[str(clf)])
         # print (confusion_matrix(y_test,model.predict(X_test))) 
-        # calculate_roc(y_test_bin, y_score)
+        each_class = calculate_roc(y_test_bin, y_score)
+        overall.append(each_class)
+    create_aoc_table(overall)
 
 def generate_roc(X_train, X_test, y_train, y_test, y_test_bin):
     confusion_matrices={}
     classifiers = [
-        # AdaBoostClassifier(),
-        # GaussianNB(),  
-        # KNeighborsClassifier(),
-        # DecisionTreeClassifier(),
-        # RandomForestClassifier(),
+        AdaBoostClassifier(),
+        GaussianNB(),  
+        KNeighborsClassifier(),
+        DecisionTreeClassifier(),
+        RandomForestClassifier(),
         MLPClassifier()   
         ]
     names = ["AdaBoostClassifierModel","GaussianNBModel","KNeighborsClassifierModel","DecisionTreeClassifierModel","RandomForestClassifierModel","MLPClassifierModel"]
     for clf,name in  zip(classifiers,names):
         filename = 'pickled_models/' + name + '.pkl'
         model = pickle.load(open(filename, 'rb'))
-        print ("Accuracy on Test Set : " + name)
-        print (model.score(X_test, y_test))         
-        print ("Report : " + name)
-        print (y_test)
-        print (model.predict(X_test))
-        print (classification_report(y_test,model.predict(X_test))) 
+        # print ("Accuracy on Test Set : " + name)
+        # print (model.score(X_test, y_test))         
+        # print ("Report : " + name)
+        # print (y_test)
+        # print (model.predict(X_test))
+        # print (classification_report(y_test,model.predict(X_test))) 
+
         # print ("Confusion Matrix")
         # confusion_matrices[str(clf)] = confusion_matrix(y_test,model.predict(X_test))
         # roc_and_auc(confusion_matrices[str(clf)])
         # print (confusion_matrix(y_test,model.predict(X_test)))
-        # y_score = model.predict_proba(X_test) 
-        # calculate_roc(y_test_bin, y_score, name)
+        y_score = model.predict_proba(X_test) 
+        calculate_roc(y_test_bin, y_score, name)
 
 def roc_and_auc(confusion_matrix_for_a_model):
     print ("GG")
