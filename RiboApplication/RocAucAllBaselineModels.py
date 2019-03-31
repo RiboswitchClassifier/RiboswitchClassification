@@ -14,7 +14,9 @@ from sklearn import metrics
 from sklearn.metrics import roc_curve, auc
 from sklearn.multiclass import OneVsRestClassifier
 import numpy as np
+import pandas as pd
 from scipy import interp
+from openpyxl.workbook import Workbook
 
 # import matplotlib.pyplot as #plt
 import pickle
@@ -108,9 +110,9 @@ def create_aoc_table(overall):
     df = pd.DataFrame(overall.T)
     print ("The generated dataframe")
     print (df)
-    # writer = pd.ExcelWriter('excelTables/PythonExport.xlsx')
-    # df.to_excel(writer,'Sheet1')
-    # writer.save() 
+    writer = pd.ExcelWriter('excelTables/modelsAocValuesTable.xlsx')
+    df.to_excel(writer,'sklearn')
+    writer.save() 
 
 
 def construct_models(X_train, X_test, y_train, y_test, y_test_bin):
