@@ -43,7 +43,7 @@ def Convert_to_Float(Data, Output):
 
 
 def calculate_roc(y_test, y_score, name):
-    each_class = [];
+    each_class = []
     n_classes = 24
     fpr = dict()
     tpr = dict()
@@ -130,7 +130,6 @@ def construct_models(X_train, X_test, y_train, y_test, y_test_bin):
         # OneVsRestClassifier(MLPClassifier(max_iter=100))    
         ]
     names = ["AdaBoostClassifierModel","GaussianNBModel","KNeighborsClassifierModel","DecisionTreeClassifierModel","RandomForestClassifierModel","MLPClassifierModel"]
-    overall = [];
     for clf,name in  zip(classifiers,names):
         model = clf.fit(X_train, y_train)
         # print("classifier", model)
@@ -148,9 +147,6 @@ def construct_models(X_train, X_test, y_train, y_test, y_test_bin):
         # confusion_matrices[str(clf)] = confusion_matrix(y_test,model.predict(X_test))
         # roc_and_auc(confusion_matrices[str(clf)])
         # print (confusion_matrix(y_test,model.predict(X_test))) 
-        each_class = calculate_roc(y_test_bin, y_score)
-        overall.append(each_class)
-    create_aoc_table(overall)
 
 def generate_roc(X_train, X_test, y_train, y_test, y_test_bin):
     confusion_matrices={}
@@ -163,6 +159,7 @@ def generate_roc(X_train, X_test, y_train, y_test, y_test_bin):
         MLPClassifier()   
         ]
     names = ["AdaBoostClassifierModel","GaussianNBModel","KNeighborsClassifierModel","DecisionTreeClassifierModel","RandomForestClassifierModel","MLPClassifierModel"]
+    overall = []
     for clf,name in  zip(classifiers,names):
         filename = 'pickled_models/' + name + '.pkl'
         model = pickle.load(open(filename, 'rb'))
@@ -178,7 +175,9 @@ def generate_roc(X_train, X_test, y_train, y_test, y_test_bin):
         # roc_and_auc(confusion_matrices[str(clf)])
         # print (confusion_matrix(y_test,model.predict(X_test)))
         y_score = model.predict_proba(X_test) 
-        calculate_roc(y_test_bin, y_score, name)
+        each_class = calculate_roc(y_test_bin, y_score, name)
+        overall.append(each_class)
+    create_aoc_table(overall)
 
 def roc_and_auc(confusion_matrix_for_a_model):
     print ("GG")
