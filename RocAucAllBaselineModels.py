@@ -31,7 +31,7 @@ def Create_Data(Path, Data, Output):
         Data_Path = list(csv.DictReader(csvfile))
         for x in Data_Path:
                 #Creating the feature vector of mono and di nucleotides
-                Data.append([x["A"], x["T"], x["G"], x["C"],x["AA"], x["AC"], x["AG"], x["AU"],x["CA"], x["CC"], x["CG"], x["CU"],x["GA"], x["GC"], x["GG"], x["GU"],x["UA"], x["UC"], x["UG"], x["UU"]])
+                Data.append([x["A"], x["T"], x["G"], x["C"],x["AA"], x["AC"], x["AG"], x["AT"],x["CA"], x["CC"], x["CG"], x["CT"],x["GA"], x["GC"], x["GG"], x["GT"],x["TA"], x["TC"], x["TG"], x["TT"]])
                 Output.append(x["Type"])
         return Data, Output
 
@@ -44,9 +44,8 @@ def Convert_to_Float(Data, Output):
     return Data, Output
 
 
-def calculate_roc(y_test, y_score, name):
+def calculate_roc(y_test, y_score, name,n_classes):
     each_class = []
-    n_classes = 24
     fpr = dict()
     tpr = dict()
     roc_auc = dict()
@@ -110,26 +109,26 @@ def create_aoc_table(overall):
     df = pd.DataFrame(overall.T)
     print ("The generated dataframe")
     print (df)
-    writer = pd.ExcelWriter('excelTables/sklearnAocValuesTable.xlsx')
+    writer = pd.ExcelWriter('sklearnAocValuesTable.xlsx')
     df.to_excel(writer,'sklearn')
-    writer.save() 
+    writer.save()
 
 
 def construct_models(X_train, X_test, y_train, y_test, y_test_bin):
     confusion_matrices={}
     classifiers = [
         # AdaBoostClassifier(),
-        # GaussianNB()  
+        # GaussianNB()
         # KNeighborsClassifier(),
         # DecisionTreeClassifier(),
         # RandomForestClassifier(),
         AdaBoostClassifier(),
-        GaussianNB(),  
+        GaussianNB(),
         KNeighborsClassifier(),
         DecisionTreeClassifier(),
         RandomForestClassifier(),
-        MLPClassifier()  
-        # OneVsRestClassifier(MLPClassifier(max_iter=100))    
+        MLPClassifier()
+        # OneVsRestClassifier(MLPClassifier(max_iter=100))
         ]
     names = ["AdaBoostClassifierModel","GaussianNBModel","KNeighborsClassifierModel","DecisionTreeClassifierModel","RandomForestClassifierModel","MLPClassifierModel"]
     for clf,name in  zip(classifiers,names):
@@ -139,26 +138,26 @@ def construct_models(X_train, X_test, y_train, y_test, y_test_bin):
         # print (model.score(X_train, y_train))
         print (name)
         print ("Accuracy on Test Set")
-        print (model.score(X_test, y_test))  
+        print (model.score(X_test, y_test))
         filename = 'pickled_models/' + name + '.pkl'
-        pickle.dump(model, open(filename, 'wb'))        
+        pickle.dump(model, open(filename, 'wb'))
         # print ("Report")
-        # print (classification_report(y_test,model.predict(X_test))) 
+        # print (classification_report(y_test,model.predict(X_test)))
         # print ("Confusion Matrix")
         y_score = model.predict_proba(X_test)
         # confusion_matrices[str(clf)] = confusion_matrix(y_test,model.predict(X_test))
         # roc_and_auc(confusion_matrices[str(clf)])
-        # print (confusion_matrix(y_test,model.predict(X_test))) 
+        # print (confusion_matrix(y_test,model.predict(X_test)))
 
-def generate_roc(X_train, X_test, y_train, y_test, y_test_bin):
+def generate_roc(X_train, X_test, y_train, y_test, y_test_bin,n_classes):
     confusion_matrices={}
     classifiers = [
         AdaBoostClassifier(),
-        GaussianNB(),  
+        GaussianNB(),
         KNeighborsClassifier(),
         DecisionTreeClassifier(),
         RandomForestClassifier(),
-        MLPClassifier()   
+        MLPClassifier()
         ]
     names = ["AdaBoostClassifierModel","GaussianNBModel","KNeighborsClassifierModel","DecisionTreeClassifierModel","RandomForestClassifierModel","MLPClassifierModel"]
     overall = []
@@ -166,86 +165,98 @@ def generate_roc(X_train, X_test, y_train, y_test, y_test_bin):
         filename = 'pickled_models/' + name + '.pkl'
         model = pickle.load(open(filename, 'rb'))
         # print ("Accuracy on Test Set : " + name)
-        # print (model.score(X_test, y_test))         
+        # print (model.score(X_test, y_test))
         # print ("Report : " + name)
         # print (y_test)
         # print (model.predict(X_test))
-        # print (classification_report(y_test,model.predict(X_test))) 
+        # print (classification_report(y_test,model.predict(X_test)))
 
         # print ("Confusion Matrix")
         # confusion_matrices[str(clf)] = confusion_matrix(y_test,model.predict(X_test))
         # roc_and_auc(confusion_matrices[str(clf)])
         # print (confusion_matrix(y_test,model.predict(X_test)))
-        y_score = model.predict_proba(X_test) 
-        each_class = calculate_roc(y_test_bin, y_score, name)
+        y_score = model.predict_proba(X_test)
+        each_class = calculate_roc(y_test_bin, y_score, name,n_classes)
         overall.append(each_class)
     create_aoc_table(overall)
 
 def roc_and_auc(confusion_matrix_for_a_model):
     print ("GG")
 
-Data_train = []
-Output_train = []
-Data_test = []
-Output_test = []
-bin_output = []
+def get_totalclass(f):
+    file = open(f,'r')
+    next(file)
+    file=file.readlines()
+    class_num=0
+    for i in file:
+        i=i.strip("\n").split(",")
+        if int(i[1]) > class_num:
+            class_num = int(i[1])
+    return class_num + 1
 
-#Exporting the CSV paths
-#Path = 'datasets/NN/16_riboswitches.csv'
-# Path = 'datasets/NN/24_riboswitches.csv'
-Path = 'processed_datasets/24_riboswitches_final_train.csv'
+if __name__ == '__main__':
 
-#Call function to Load Dataset
-Data_train, Output_train = Create_Data(Path, Data_train, Output_train)
+    Data_train = []
+    Output_train = []
+    Data_test = []
+    Output_test = []
+    bin_output = []
 
-#Converting the train data into Float
-Data_train, Output_train = Convert_to_Float(Data_train, Output_train)
+    #Exporting the CSV paths
+    #Path = 'datasets/NN/16_riboswitches.csv'
+    # Path = 'datasets/NN/24_riboswitches.csv'
+    Path = 'processed_datasets/final_train.csv'
 
-Path = 'processed_datasets/24_riboswitches_final_test.csv'
+    #Call function to Load Dataset
+    Data_train, Output_train = Create_Data(Path, Data_train, Output_train)
 
-#Call function to Load Dataset
-Data_test, Output_test = Create_Data(Path, Data_test, Output_test)
+    #Converting the train data into Float
+    Data_train, Output_train = Convert_to_Float(Data_train, Output_train)
 
-#Converting the train data into Float
-Data_test, Output_test = Convert_to_Float(Data_test, Output_test)
+    Path = 'processed_datasets/final_test.csv'
 
-#Divide Dataset for training and testing
-#Data_train, Data_test, Output_train, Output_test = train_test_split(Data, Output, test_size=0.1, stratify=Output)
+    #Call function to Load Dataset
+    Data_test, Output_test = Create_Data(Path, Data_test, Output_test)
 
-# print (Data_test)
-# print (Output_test)
-unique_classes = list(set(Output_test))
-unique_classes.sort()
-print (unique_classes)
-bin_output = label_binarize(Output_test, classes=unique_classes)
+    #Converting the train data into Float
+    Data_test, Output_test = Convert_to_Float(Data_test, Output_test)
 
-# #Converting the train data into Float
-# Data_train, Output_train = Convert_to_Float(Data_train, Output_train)
+    #Divide Dataset for training and testing
+    #Data_train, Data_test, Output_train, Output_test = train_test_split(Data, Output, test_size=0.1, stratify=Output)
+
+    # print (Data_test)
+    # print (Output_test)
+    unique_classes = list(set(Output_test))
+    unique_classes.sort()
+    print (unique_classes)
+    bin_output = label_binarize(Output_test, classes=unique_classes)
+
+    # #Converting the train data into Float
+    # Data_train, Output_train = Convert_to_Float(Data_train, Output_train)
 
 
-#Preprocessing the data
-scaler = StandardScaler()
-scaler.fit(Data_train)
-Data_train = scaler.transform(Data_train)
-Data_test = scaler.transform(Data_test)
+    #Preprocessing the data
+    scaler = StandardScaler()
+    scaler.fit(Data_train)
+    Data_train = scaler.transform(Data_train)
+    Data_test = scaler.transform(Data_test)
 
-# construct_models(Data_train, Data_test, Output_train, Output_test, bin_output)
-generate_roc(Data_train, Data_test, Output_train, Output_test, bin_output)
-
-# Accuracy on Test Set
-# 0.395582660293
-# Accuracy on Test Set
-# 0.540959287951
-# Accuracy on Test Set
-# 0.798912147684
-# Accuracy on Test Set
-# 0.706609526949
-# C:\Users\Welcome\AppData\Local\conda\conda\envs\kesh1\lib\site-packages\sklearn\ensemble\forest.py:248: FutureWarning: The default value of n_estimators will change from 10 in version 0.20 to 100 in 0.22.
-#   "10 in version 0.20 to 100 in 0.22.", FutureWarning)
-# Accuracy on Test Set
-# 0.782429536839
-# C:\Users\Welcome\AppData\Local\conda\conda\envs\kesh1\lib\site-packages\sklearn\neural_network\multilayer_perceptron.py:562: ConvergenceWarning: Stochastic Optimizer: Maximum iterations (200) reached and the optimization hasn't converged yet.
-#   % self.max_iter, ConvergenceWarning)
-# Accuracy on Test Set
-# 0.844074501401
-
+    # construct_models(Data_train, Data_test, Output_train, Output_test, bin_output
+    total_class=get_totalclass('processed_datasets/final_test.csv')
+    generate_roc(Data_train, Data_test, Output_train, Output_test, bin_output,total_class)
+    # Accuracy on Test Set
+    # 0.395582660293
+    # Accuracy on Test Set
+    # 0.540959287951
+    # Accuracy on Test Set
+    # 0.798912147684
+    # Accuracy on Test Set
+    # 0.706609526949
+    # C:\Users\Welcome\AppData\Local\conda\conda\envs\kesh1\lib\site-packages\sklearn\ensemble\forest.py:248: FutureWarning: The default value of n_estimators will change from 10 in version 0.20 to 100 in 0.22.
+    #   "10 in version 0.20 to 100 in 0.22.", FutureWarning)
+    # Accuracy on Test Set
+    # 0.782429536839
+    # C:\Users\Welcome\AppData\Local\conda\conda\envs\kesh1\lib\site-packages\sklearn\neural_network\multilayer_perceptron.py:562: ConvergenceWarning: Stochastic Optimizer: Maximum iterations (200) reached and the optimization hasn't converged yet.
+    #   % self.max_iter, ConvergenceWarning)
+    # Accuracy on Test Set
+    # 0.844074501401
