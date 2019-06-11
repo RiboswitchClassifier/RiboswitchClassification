@@ -44,8 +44,6 @@ def calculate_roc(y_test, y_score, name):
     for i in range(n_classes):
         fpr[i], tpr[i], _ = roc_curve(bin_output[:, i], y_score[:, i])
         roc_auc[i] = auc(fpr[i], tpr[i])
-    # print ("ROC_AUC")
-    # print (roc_auc)
 
     # Compute micro-average ROC curve and ROC area
     fpr["micro"], tpr["micro"], _ = roc_curve(bin_output.ravel(), y_score.ravel())
@@ -65,15 +63,15 @@ def calculate_roc(y_test, y_score, name):
     tpr["macro"] = mean_tpr
     roc_auc["macro"] = auc(fpr["macro"], tpr["macro"])
 
-    #plt.plot(fpr["micro"], tpr["micro"],
-            # label='micro-average ROC curve (area = {0:0.2f})'
-            #     ''.format(roc_auc["micro"]),
-            # color='deeppink', linestyle=':', linewidth=4)
+    plt.plot(fpr["micro"], tpr["micro"],
+            label='micro-average ROC curve (area = {0:0.2f})'
+                ''.format(roc_auc["micro"]),
+            color='deeppink', linestyle=':', linewidth=4)
 
-    #plt.plot(fpr["macro"], tpr["macro"],
-            # label='macro-average ROC curve (area = {0:0.2f})'
-            #     ''.format(roc_auc["macro"]),
-            # color='navy', linestyle=':', linewidth=4)
+    plt.plot(fpr["macro"], tpr["macro"],
+            label='macro-average ROC curve (area = {0:0.2f})'
+                ''.format(roc_auc["macro"]),
+            color='navy', linestyle=':', linewidth=4)
 
     colors = cycle([
         '#aa65bb', '#c8a581', '#701f57','#f5aed0', '#7288ee', '#f6bcba',
@@ -85,7 +83,6 @@ def calculate_roc(y_test, y_score, name):
     each_class.append(round(roc_auc["macro"], 2))
     for i, color in zip(range(n_classes), colors):
         plt.plot(fpr[i], tpr[i], color=color, lw=lw,label='ROC curve of class {0} (area = {1:0.2f})'.format(i, roc_auc[i]))
-        # print (#plt)
         each_class.append(round(roc_auc[i], 2))
 
     plt.plot([0, 1], [0, 1], 'k--', lw=lw)
@@ -96,5 +93,4 @@ def calculate_roc(y_test, y_score, name):
     plt.title('Receiver operating characteristic for multi-class data : ' + name)
     plt.legend(loc="lower right")
     plt.show()
-    # create_aoc_table(each_class, name)
-    print ("GG")
+    create_aoc_table(each_class, name)

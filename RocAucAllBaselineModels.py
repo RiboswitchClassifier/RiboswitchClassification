@@ -52,8 +52,6 @@ def calculate_roc(y_test, y_score, name,n_classes):
     for i in range(n_classes):
         fpr[i], tpr[i], _ = roc_curve(y_test[:, i], y_score[:, i])
         roc_auc[i] = auc(fpr[i], tpr[i])
-    # print ("ROC_AUC")
-    # print (roc_auc)
 
     # Compute micro-average ROC curve and ROC area
     fpr["micro"], tpr["micro"], _ = roc_curve(y_test.ravel(), y_score.ravel())
@@ -73,15 +71,15 @@ def calculate_roc(y_test, y_score, name,n_classes):
     tpr["macro"] = mean_tpr
     roc_auc["macro"] = auc(fpr["macro"], tpr["macro"])
 
-    #plt.plot(fpr["micro"], tpr["micro"],
-            # label='micro-average ROC curve (area = {0:0.2f})'
-            #     ''.format(roc_auc["micro"]),
-            # color='deeppink', linestyle=':', linewidth=4)
+    plt.plot(fpr["micro"], tpr["micro"],
+            label='micro-average ROC curve (area = {0:0.2f})'
+                ''.format(roc_auc["micro"]),
+            color='deeppink', linestyle=':', linewidth=4)
 
-    #plt.plot(fpr["macro"], tpr["macro"],
-            # label='macro-average ROC curve (area = {0:0.2f})'
-            #     ''.format(roc_auc["macro"]),
-            # color='navy', linestyle=':', linewidth=4)
+    plt.plot(fpr["macro"], tpr["macro"],
+            label='macro-average ROC curve (area = {0:0.2f})'
+                ''.format(roc_auc["macro"]),
+            color='navy', linestyle=':', linewidth=4)
 
     colors = cycle([
         '#aa65bb', '#c8a581', '#701f57','#f5aed0', '#7288ee', '#f6bcba',
@@ -92,16 +90,16 @@ def calculate_roc(y_test, y_score, name,n_classes):
     each_class.append(round(roc_auc["micro"], 2))
     each_class.append(round(roc_auc["macro"], 2))
     for i, color in zip(range(n_classes), colors):
-        #plt.plot(fpr[i], tpr[i], color=color, lw=lw,label='ROC curve of class {0} (area = {1:0.2f})'.format(i, roc_auc[i]))
+        plt.plot(fpr[i], tpr[i], color=color, lw=lw,label='ROC curve of class {0} (area = {1:0.2f})'.format(i, roc_auc[i]))
         each_class.append(round(roc_auc[i], 2))
-    #plt.plot([0, 1], [0, 1], 'k--', lw=lw)
-    #plt.xlim([-0.05, 1.0])
-    #plt.ylim([0.0, 1.05])
-    #plt.xlabel('False Positive Rate')
-    #plt.ylabel('True Positive Rate')
-    #plt.title('Receiver operating characteristic for multi-class data : ' + name)
-    #plt.legend(loc="lower right")
-    #plt.show()
+    plt.plot([0, 1], [0, 1], 'k--', lw=lw)
+    plt.xlim([-0.05, 1.0])
+    plt.ylim([0.0, 1.05])
+    plt.xlabel('False Positive Rate')
+    plt.ylabel('True Positive Rate')
+    plt.title('Receiver operating characteristic for multi-class data : ' + name)
+    plt.legend(loc="lower right")
+    plt.show()
     return each_class
 
 def create_aoc_table(overall):
@@ -117,37 +115,27 @@ def create_aoc_table(overall):
 def construct_models(X_train, X_test, y_train, y_test, y_test_bin):
     confusion_matrices={}
     classifiers = [
-        # AdaBoostClassifier(),
-        # GaussianNB()
-        # KNeighborsClassifier(),
-        # DecisionTreeClassifier(),
-        # RandomForestClassifier(),
         AdaBoostClassifier(),
         GaussianNB(),
         KNeighborsClassifier(),
         DecisionTreeClassifier(),
         RandomForestClassifier(),
         MLPClassifier()
-        # OneVsRestClassifier(MLPClassifier(max_iter=100))
         ]
     names = ["AdaBoostClassifierModel","GaussianNBModel","KNeighborsClassifierModel","DecisionTreeClassifierModel","RandomForestClassifierModel","MLPClassifierModel"]
     for clf,name in  zip(classifiers,names):
         model = clf.fit(X_train, y_train)
-        # print("classifier", model)
-        # print ("Accuracy on Train Set")
-        # print (model.score(X_train, y_train))
+        print("classifier", model)
+        print ("Accuracy on Train Set")
+        print (model.score(X_train, y_train))
         print (name)
         print ("Accuracy on Test Set")
         print (model.score(X_test, y_test))
         filename = 'pickled_models/' + name + '.pkl'
         pickle.dump(model, open(filename, 'wb'))
-        # print ("Report")
-        # print (classification_report(y_test,model.predict(X_test)))
-        # print ("Confusion Matrix")
-        y_score = model.predict_proba(X_test)
-        # confusion_matrices[str(clf)] = confusion_matrix(y_test,model.predict(X_test))
-        # roc_and_auc(confusion_matrices[str(clf)])
-        # print (confusion_matrix(y_test,model.predict(X_test)))
+        print ("Report")
+        print (classification_report(y_test,model.predict(X_test)))
+
 
 def generate_roc(X_train, X_test, y_train, y_test, y_test_bin,n_classes):
     confusion_matrices={}
@@ -164,24 +152,11 @@ def generate_roc(X_train, X_test, y_train, y_test, y_test_bin,n_classes):
     for clf,name in  zip(classifiers,names):
         filename = 'pickled_models/' + name + '.pkl'
         model = pickle.load(open(filename, 'rb'))
-        # print ("Accuracy on Test Set : " + name)
-        # print (model.score(X_test, y_test))
-        # print ("Report : " + name)
-        # print (y_test)
-        # print (model.predict(X_test))
-        # print (classification_report(y_test,model.predict(X_test)))
-
-        # print ("Confusion Matrix")
-        # confusion_matrices[str(clf)] = confusion_matrix(y_test,model.predict(X_test))
-        # roc_and_auc(confusion_matrices[str(clf)])
-        # print (confusion_matrix(y_test,model.predict(X_test)))
         y_score = model.predict_proba(X_test)
         each_class = calculate_roc(y_test_bin, y_score, name,n_classes)
         overall.append(each_class)
     create_aoc_table(overall)
 
-def roc_and_auc(confusion_matrix_for_a_model):
-    print ("GG")
 
 def get_totalclass(f):
     file = open(f,'r')
@@ -221,18 +196,10 @@ if __name__ == '__main__':
     #Converting the train data into Float
     Data_test, Output_test = Convert_to_Float(Data_test, Output_test)
 
-    #Divide Dataset for training and testing
-    #Data_train, Data_test, Output_train, Output_test = train_test_split(Data, Output, test_size=0.1, stratify=Output)
-
-    # print (Data_test)
-    # print (Output_test)
     unique_classes = list(set(Output_test))
     unique_classes.sort()
     print (unique_classes)
     bin_output = label_binarize(Output_test, classes=unique_classes)
-
-    # #Converting the train data into Float
-    # Data_train, Output_train = Convert_to_Float(Data_train, Output_train)
 
 
     #Preprocessing the data
@@ -241,22 +208,6 @@ if __name__ == '__main__':
     Data_train = scaler.transform(Data_train)
     Data_test = scaler.transform(Data_test)
 
-    # construct_models(Data_train, Data_test, Output_train, Output_test, bin_output
+    construct_models(Data_train, Data_test, Output_train, Output_test, bin_output)
     total_class=get_totalclass('processed_datasets/final_test.csv')
     generate_roc(Data_train, Data_test, Output_train, Output_test, bin_output,total_class)
-    # Accuracy on Test Set
-    # 0.395582660293
-    # Accuracy on Test Set
-    # 0.540959287951
-    # Accuracy on Test Set
-    # 0.798912147684
-    # Accuracy on Test Set
-    # 0.706609526949
-    # C:\Users\Welcome\AppData\Local\conda\conda\envs\kesh1\lib\site-packages\sklearn\ensemble\forest.py:248: FutureWarning: The default value of n_estimators will change from 10 in version 0.20 to 100 in 0.22.
-    #   "10 in version 0.20 to 100 in 0.22.", FutureWarning)
-    # Accuracy on Test Set
-    # 0.782429536839
-    # C:\Users\Welcome\AppData\Local\conda\conda\envs\kesh1\lib\site-packages\sklearn\neural_network\multilayer_perceptron.py:562: ConvergenceWarning: Stochastic Optimizer: Maximum iterations (200) reached and the optimization hasn't converged yet.
-    #   % self.max_iter, ConvergenceWarning)
-    # Accuracy on Test Set
-    # 0.844074501401

@@ -30,12 +30,6 @@ import aucRoc
 import graphviz
 import functools
 
-# 16 and 24 classes gave similar metrics
-# Train Accuracy : 0.98
-# Validation Accuracy : 0.98
-# Test Accuracy : 0.97
-# F1 Score : 0.98
-
 # Hyperparameters and Parameters
 EPOCHS = 20 #  an arbitrary cutoff, generally defined as "one pass over the entire dataset", used to separate training into distinct phases, which is useful for logging and periodic evaluation.
 BATCH_SIZE = 128 # a set of N samples. The samples in a batch are processed` independently, in parallel. If training, a batch results in only one update to the model.
@@ -54,22 +48,17 @@ model_file_h5 = "models/cnn_24_model.h5"
 
 # Path to Dataset
 input_file_train = 'processed_datasets/final_train.csv'
-# input_file_train = 'processed_datasets/sample2.csv'
 input_file_test  = 'processed_datasets/final_test.csv'
-
-# Just to check if things are working properly
-# input_file_test = 'processed_datasets/sample.csv'
-
 
 # Convert letters to numbers
 def letter_to_index(letter):
-    _alphabet = 'ATGCN' # DRS
-    # _alphabet = 'ATGCNDRS' # DRS
+    _alphabet = 'ATGCN'
     if letter not in _alphabet:
-        print ("Letter not present")
+        print ("Letter not present - Please Check the Dataset")
         print (letter)
     return next((i for i, _letter in enumerate(_alphabet) if _letter == letter), None)
 
+# Charecter mapping to acheive ATGCN
 def charecter_maping(x):
     repls = {'R' : 'G', 'Y' : 'T', 'M' : 'A', 'K' : 'G', 'S' : 'G', 'W' : 'A', 'H' : 'A', 'B' : 'G', 'V' : 'G', 'D' : 'G'}
     x = functools.reduce(lambda a, kv: a.replace(*kv), repls.items(), x)
@@ -77,12 +66,9 @@ def charecter_maping(x):
 
 # Load Data to be used for training and validation
 def load_data(input_file, flag, test_split = 0.0, maxlen = MAXLEN):
-    print ('Loading data...')
     df = pd.read_csv(input_file)
     df['Sequence'] = df['Sequence'].apply(charecter_maping)
-    print (df['Sequence']);
     df['Sequence'] = df['Sequence'].apply(lambda x: [int(letter_to_index(e)) for e in x])
-    # df = df.reindex(np.random.permutation(df.index))
     X = np.array(df['Sequence'].values)
     Y = np.array(df['Type'].values)
     if flag:
@@ -94,9 +80,6 @@ def load_data(input_file, flag, test_split = 0.0, maxlen = MAXLEN):
 
 # Create the CNN
 def create_cnn(input_length, dropout_ratio = DROPOUT_RATIO):
-    # m, n =  X_train.shape
-    # print (m)
-    # print (input_length)
     model = Sequential()
     model.add(Conv1D(filters = 10, kernel_size = 3, input_shape=(input_length, 1)))
     model.add(Conv1D(filters = 10, kernel_size = 3, activation='relu'))
@@ -109,28 +92,21 @@ def create_cnn(input_length, dropout_ratio = DROPOUT_RATIO):
 
 # Train CNN
 def train_model_and_save(X_train, y_train, model):
-    # Save Checkpoint
     filepath= checkpoint_dir + "/weights-improvement-{epoch:02d}-{val_acc:.2f}.hdf5"
     checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=0, save_best_only=True, mode='max')
     callbacks_list = [checkpoint]
-
-    print ('Fitting model...')
-    print (np.unique(y_train))
-    class_weights = class_weight.compute_class_weight('balanced', np.unique(y_train), y_train) # y_ints = [y.argmax() for y in y_train]
-    print ("Class Weights")
-    print(class_weights)
-    # X_train = np.expand_dims(X_train, axis=2)
-    # print (X_train.shape)
+    class_weights = class_weight.compute_class_weight('balanced', np.unique(y_train), y_train)
     history = model.fit(X_train, y_train, batch_size=BATCH_SIZE, class_weight=class_weights,
         epochs=EPOCHS, validation_split = VALIDATION_SPLIT, verbose = 1, shuffle=True)
     model.save(model_file_h5)
     print("Saved model to disk")
     return model
 
+# Classification Report
 def generate_classification_report(model_loaded, X_test, y_test):
-    # print ("Classification Report")
     print (classification_report(y_test,model_loaded.predict_classes(X_test)))
 
+# Predict Classes, Probabilities, Call AucRoc Function
 def generate_auc_roc(X_test, y_test):
     model_loaded = load_model(model_file_h5)
     generate_classification_report(model_loaded, X_test, y_test)

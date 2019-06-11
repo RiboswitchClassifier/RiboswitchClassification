@@ -48,13 +48,8 @@ os.path.exists(checkpoint_dir)
 model_file_h5 = "models/rnn_24_model.h5"
 
 # Path to Dataset
-input_file_train  = 'processed_datasets/24_riboswitches_final_train.csv'
-# input_file_train = 'processed_datasets/sample2.csv'
-input_file_test = 'processed_datasets/24_riboswitches_final_test.csv'
-
-
-# Just to check if things are working properly
-# input_file_test = 'datasets/RNN/predition_sample.csv'
+input_file_train = 'processed_datasets/final_train.csv'
+input_file_test  = 'processed_datasets/final_test.csv'
 
 # Convert letters to numbers 
 def letter_to_index(letter):
@@ -63,6 +58,7 @@ def letter_to_index(letter):
         print (letter)
     return next((i for i, _letter in enumerate(ALLOWED_ALPHABETS) if _letter == letter), None)
 
+# Charecter mapping to acheive ATGCN
 def charecter_maping(x):
     repls = {'R' : 'G', 'Y' : 'T', 'M' : 'A', 'K' : 'G', 'S' : 'G', 'W' : 'A', 'H' : 'A', 'B' : 'G', 'V' : 'G', 'D' : 'G'}
     x = functools.reduce(lambda a, kv: a.replace(*kv), repls.items(), x)
@@ -70,10 +66,8 @@ def charecter_maping(x):
 
 # Load Data to be used for training and validation
 def load_data(input_file, flag ,test_split = 0.0, maxlen = MAXLEN):
-    print ('Loading data...')
     df = pd.read_csv(input_file)
     df['Sequence'] = df['Sequence'].apply(charecter_maping)
-    print (df['Sequence']);
     df['Sequence'] = df['Sequence'].apply(lambda x: [int(letter_to_index(e)) for e in x])
     # df = df.reindex(np.random.permutation(df.index))
     X = np.array(df['Sequence'].values)
@@ -104,23 +98,18 @@ def train_model_and_save(X_train, y_train, model):
     filepath= checkpoint_dir + "/weights-improvement-{epoch:02d}-{val_acc:.2f}.hdf5"
     checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=0, save_best_only=True, mode='max')
     callbacks_list = [checkpoint]
-
-    print ('Fitting model...')
-    print (np.unique(y_train))
     class_weights = class_weight.compute_class_weight('balanced', np.unique(y_train), y_train)
-    print ("Class Weights")
-    print(class_weights)
     history = model.fit(X_train, y_train, batch_size=BATCH_SIZE, class_weight=class_weights,
         epochs=EPOCHS, callbacks=callbacks_list, validation_split = VALIDATION_SPLIT, verbose = 1, shuffle=True)
     model.save(model_file_h5) 
     print("Saved model to disk")
     return model
 
+# Classification Report
 def generate_classification_report(model_loaded, X_test, y_test):
-    # print ("Classification Report")
     print (classification_report(y_test,model_loaded.predict_classes(X_test))) 
 
-
+# Predict Classes, Probabilities, Call AucRoc Function
 def generate_auc_roc(X_test, y_test):
     model_loaded = load_model(model_file_h5)
     generate_classification_report(model_loaded, X_test, y_test)
