@@ -76,7 +76,7 @@ CNN
 
     > python3  cnnApp.py
     
-    1. Create's a .h5 RNN Model
+    1. Create's a .h5 CNN Model
     2. The model is used on the test set to obtain accuracy, generate a classication report and the ROC-AUC values for each 
        of the 24 classes. 
     3. Provides an Accuracy of 97% on the test set.
