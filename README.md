@@ -24,8 +24,6 @@ Datasets, Models
 
     Contains the rnn and cnn model's saved in h5 format 
     
-
-
 Baseline Models Constructed using Sklearn Library
 ------------
 
@@ -43,21 +41,28 @@ Baseline Models Constructed using Sklearn Library
     3. The MLPClassifier() proved to be the best among the chosen sklearn classifiers and hence Neural Networks (CNN and RNN) 
        were explored further to acheive greater accuracy.
  
- Baseline Models Constructed using Sklearn Library
+ RNN
 ------------
 
-    > python3  RocAucAllBaselineModels.py
+    > python3  rnnApp.py
     
-    1. Create's a Picked Model for each of the sklearn classifers stated below:
-        AdaBoostClassifier(),
-        GaussianNB(),
-        KNeighborsClassifier(),
-        DecisionTreeClassifier(),
-        RandomForestClassifier(),
-        MLPClassifier()
-    2. Each model is used on the test set to obtain accuracy, generate a classication report and the ROC-AUC values for each 
+    1. Create's a .h5 RNN Model
+    2. The model is used on the test set to obtain accuracy, generate a classication report and the ROC-AUC values for each 
        of the 24 classes. 
-    3. The MLPClassifier() proved to be the best among the chosen sklearn classifiers and hence Neural Networks (CNN and RNN) 
-       were explored further to acheive greater accuracy.
+    3. Provides an Accuracy of 99% on the test set.
+    4. New layers and hyperparameter values can be added or changed when dealing with a dataset having different number of classes
+    5. The train time is fairly long ( in the magnitude of hours - suitable for system with high specs )
+    
+CNN
+------------
+
+    > python3  cnnApp.py
+    
+    1. Create's a .h5 RNN Model
+    2. The model is used on the test set to obtain accuracy, generate a classication report and the ROC-AUC values for each 
+       of the 24 classes. 
+    3. Provides an Accuracy of 97% on the test set.
+    4. New layers and hyperparameter values can be added or changed when dealing with a dataset having different number of classes.
+    5. The train time is fairly short ( < 1 min - suitable for low spec systems )
  
     
