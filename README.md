@@ -2,7 +2,7 @@
 
 [riboflow](https://test.pypi.org/project/riboflow/) is a python package for classifying putative riboswitch sequences into one of 24 classes with > 99% accuracy. It is based on a [tensorflow](https://www.tensorflow.org) deep learning model. ``riboflow`` has been tested using ``Python 3.5.2``. 
 
-Datasets, Models
+Datasets, Models, Utility Files
 ------------
 
 1.original_datasets
@@ -23,6 +23,23 @@ Datasets, Models
 4.models
 
     Contains the rnn and cnn model's saved in h5 format 
+    
+5.aucRoc.py
+
+    Used by the cnn and rnn for auc-roc generation
+
+6.split_dataset.py
+
+    Used to generate final_train.csv and final_test.csv which is used by RocAucAllBaselineModels.py, rnnApp.py, cnnApp.py 
+    
+7.aucRoc.py
+
+    Used by the cnn and rnn for auc-roc generation
+    
+8.dynamic.py [IMPORTANT]
+    
+    Can used on riboswitch fasta files of any number of classes to generate the equivalent processed csv files having the  
+    sequence and frequency (this file can be used RocAucAllBaselineModels.py, rnnApp.py, cnnApp.py for training purposes) 
     
 Baseline Models Constructed using Sklearn Library
 ------------
