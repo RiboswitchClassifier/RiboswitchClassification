@@ -41,7 +41,7 @@ MAXLEN = 250 # cuts text after number of these characters in pad_sequences
 VALIDATION_SPLIT = 0.1
 
 # Create Directory for Checkpoints
-checkpoint_dir ='epoch_tuning/RNN/dev/24_checkpoints'
+checkpoint_dir ='epoch_tuning/RNN/24_checkpoints'
 os.path.exists(checkpoint_dir)
 
 # Path to save and load Model 
