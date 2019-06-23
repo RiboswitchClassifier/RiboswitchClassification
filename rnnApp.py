@@ -116,6 +116,9 @@ def generate_auc_roc(X_test, y_test):
     predicted_classes = model_loaded.predict_classes(X_test)
     print ("Predicted Classes")
     print (predicted_classes)
+    score, acc = model_loaded.evaluate(X_test, y_test,batch_size=BATCH_SIZE)
+    print (score)
+    print (acc)
     y_score = model_loaded.predict_proba(X_test)
     print ("Predicted Probabilities") 
     print (y_score)
@@ -132,7 +135,7 @@ if __name__ == '__main__':
     # Train Model and Save it
     model = train_model_and_save(X_train, y_train, model)
     # Generate Auc and Roc Curve
-    generate_auc_roc(X_test, y_test, CLASSES)
+    generate_auc_roc(X_test, y_test)
 
 
 
