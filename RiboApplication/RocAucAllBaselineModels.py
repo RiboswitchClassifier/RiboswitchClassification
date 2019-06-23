@@ -44,7 +44,7 @@ def Convert_to_Float(Data, Output):
     return Data, Output
 
 
-def calculate_roc(y_test, y_score, name):
+def calculate_roc(y_test, y_score, name, label_name):
     each_class = []
     n_classes = 24
     fpr = dict()
@@ -74,10 +74,10 @@ def calculate_roc(y_test, y_score, name):
     tpr["macro"] = mean_tpr
     roc_auc["macro"] = auc(fpr["macro"], tpr["macro"])
 
-    #plt.plot(fpr["micro"], tpr["micro"],
-            # label='micro-average ROC curve (area = {0:0.2f})'
-            #     ''.format(roc_auc["micro"]),
-            # color='deeppink', linestyle=':', linewidth=4)
+    plt.plot(0, 0,
+            label='micro-average ROC curve (area = {0:0.2f})'
+                ''.format(roc_auc["micro"]),
+            color='white', linestyle=':', linewidth=4)
 
     #plt.plot(fpr["macro"], tpr["macro"],
             # label='macro-average ROC curve (area = {0:0.2f})'
@@ -93,16 +93,17 @@ def calculate_roc(y_test, y_score, name):
     each_class.append(round(roc_auc["micro"], 2))
     each_class.append(round(roc_auc["macro"], 2))
     for i, color in zip(range(n_classes), colors):
-        #plt.plot(fpr[i], tpr[i], color=color, lw=lw,label='ROC curve of class {0} (area = {1:0.2f})'.format(i, roc_auc[i]))
+        # plt.plot(fpr[i], tpr[i], color=color, lw=lw,label='ROC curve of class {0} (area = {1:0.2f})'.format(i + 1, roc_auc[i]))
+        plt.plot(fpr[i], tpr[i], color=color, lw=lw)
         each_class.append(round(roc_auc[i], 2))
-    #plt.plot([0, 1], [0, 1], 'k--', lw=lw)
-    #plt.xlim([-0.05, 1.0])
-    #plt.ylim([0.0, 1.05])
-    #plt.xlabel('False Positive Rate')
-    #plt.ylabel('True Positive Rate')
-    #plt.title('Receiver operating characteristic for multi-class data : ' + name)
-    #plt.legend(loc="lower right")
-    #plt.show()
+    plt.plot([0, 1], [0, 1], 'k--', lw=lw)
+    plt.xlim([-0.05, 1.0])
+    plt.ylim([0.0, 1.05])
+    plt.xlabel('False Positive Rate')
+    plt.ylabel('True Positive Rate')
+    plt.title('Receiver operating characteristic for multi-class data : ' + label_name)
+    plt.legend(loc="lower right")
+    plt.show()
     return each_class
 
 def create_aoc_table(overall):
@@ -161,8 +162,9 @@ def generate_roc(X_train, X_test, y_train, y_test, y_test_bin):
         MLPClassifier()   
         ]
     names = ["AdaBoostClassifierModel","GaussianNBModel","KNeighborsClassifierModel","DecisionTreeClassifierModel","RandomForestClassifierModel","MLPClassifierModel"]
+    label_names = ["Adaptive Boosting","Gaussian Naive Bayes","K-Nearest-Neighbours","Decision Tree","Random Forest","Multi Layer Perceptron"]
     overall = []
-    for clf,name in  zip(classifiers,names):
+    for clf,name,label_name in  zip(classifiers,names,label_names):
         filename = 'pickled_models/' + name + '.pkl'
         model = pickle.load(open(filename, 'rb'))
         # print ("Accuracy on Test Set : " + name)
@@ -177,9 +179,9 @@ def generate_roc(X_train, X_test, y_train, y_test, y_test_bin):
         # roc_and_auc(confusion_matrices[str(clf)])
         # print (confusion_matrix(y_test,model.predict(X_test)))
         y_score = model.predict_proba(X_test) 
-        each_class = calculate_roc(y_test_bin, y_score, name)
+        each_class = calculate_roc(y_test_bin, y_score, name, label_name)
         overall.append(each_class)
-    create_aoc_table(overall)
+    # create_aoc_table(overall)
 
 def roc_and_auc(confusion_matrix_for_a_model):
     print ("GG")

@@ -66,6 +66,11 @@ def calculate_roc(y_test, y_score, name):
     tpr["macro"] = mean_tpr
     roc_auc["macro"] = auc(fpr["macro"], tpr["macro"])
 
+    plt.plot(0, 0,
+            label='micro-average ROC curve (area = {0:0.2f})'
+                ''.format(roc_auc["micro"]),
+            color='white', linestyle=':', linewidth=4)
+
     #plt.plot(fpr["micro"], tpr["micro"],
             # label='micro-average ROC curve (area = {0:0.2f})'
             #     ''.format(roc_auc["micro"]),
@@ -85,17 +90,18 @@ def calculate_roc(y_test, y_score, name):
     each_class.append(round(roc_auc["micro"], 2))
     each_class.append(round(roc_auc["macro"], 2))
     for i, color in zip(range(n_classes), colors):
-        #plt.plot(fpr[i], tpr[i], color=color, lw=lw,label='ROC curve of class {0} (area = {1:0.2f})'.format(i, roc_auc[i]))
+        # plt.plot(fpr[i], tpr[i], color=color, lw=lw,label='ROC curve of class {0} (area = {1:0.2f})'.format(i+1, roc_auc[i]))
+        plt.plot(fpr[i], tpr[i], color=color, lw=lw)
         # print (#plt)
         each_class.append(round(roc_auc[i], 2))
 
-    #plt.plot([0, 1], [0, 1], 'k--', lw=lw)
-    #plt.xlim([-0.05, 1.0])
-    #plt.ylim([0.0, 1.05])
-    #plt.xlabel('False Positive Rate')
-    #plt.ylabel('True Positive Rate')
-    #plt.title('Receiver operating characteristic for multi-class data : ' + name)
-    #plt.legend(loc="lower right")
-    #plt.show()
-    create_aoc_table(each_class, name)
+    plt.plot([0, 1], [0, 1], 'k--', lw=lw)
+    plt.xlim([-0.05, 1.0])
+    plt.ylim([0.0, 1.05])
+    plt.xlabel('False Positive Rate')
+    plt.ylabel('True Positive Rate')
+    plt.title('Receiver operating characteristic for multi-class data : ' + name)
+    plt.legend(loc="lower right")
+    plt.show()
+    # create_aoc_table(each_class, name)
     print ("GG")

@@ -255,7 +255,7 @@ if __name__ == '__main__':
     y_score = model_loaded.predict_proba(X_test) 
     print (y_score)
 
-    aucRoc.calculate_roc(y_test, y_score, "CnnClassifierModel")
+    aucRoc.calculate_roc(y_test, y_score, "Convolutional Neural Network")
 
     # True_Positives, False_Negatives, All_Positives, False_Positives, True_Negatives, All_Negatives = roc.choose_from_confusion_matrix(confusion_matrices)
 
