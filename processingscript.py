@@ -44,7 +44,7 @@ def makecsv(file):
     output_file.close()
     return output_file
 
-"""
+
 
 nu_of_genes=[]
 for i in os.listdir('original_datasets/31_riboswitches_new_csv'):
@@ -66,6 +66,17 @@ for i,j in zip(os.listdir('original_datasets/31_riboswitches_new_csv'),nu_of_gen
 f=f.close()
 
 """
+final_csv="processed_datasets/final_31classes.csv"
+output = open(final_csv,'w+')
 
-
-"""
+type=0
+for j in os.listdir('original_datasets/31_riboswitches_new_csv'):
+    dir='original_datasets/31_riboswitches_new_csv'
+    file = open(os.path.join(dir,j),'r')
+    next(file)
+    file = file.readlines()
+    for i in file:
+        i = i.strip("\n").split(",")
+        output.write("{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}\n".format(i[1],type,i[2],i[3],i[4],i[5],i[6],i[7],i[8],i[9],i[10],i[11],i[12],i[13],i[14],i[15],i[16],i[17],i[18],i[19],i[20],i[21]))
+    type=type+1
+output.close()
