@@ -34,21 +34,21 @@ import functools
 EPOCHS = 20 #  an arbitrary cutoff, generally defined as "one pass over the entire dataset", used to separate training into distinct phases, which is useful for logging and periodic evaluation.
 BATCH_SIZE = 128 # a set of N samples. The samples in a batch are processed` independently, in parallel. If training, a batch results in only one update to the model.
 ALLOWED_ALPHABETS = 'ATGCN' # Allowed Charecters
-CLASSES = 24 # Number of Classes to Classify -> Change this to 16 when needed
+CLASSES = 32 # Number of Classes to Classify -> Change this to 16 when needed
 DROPOUT_RATIO = 0.5 # proportion of neurones not used for training
 MAXLEN = 250 # cuts text after number of these characters in pad_sequences
 VALIDATION_SPLIT = 0.1
 
 # Create Directory for Checkpoints
-checkpoint_dir ='epoch_tuning/CNN/24_checkpoints'
+checkpoint_dir ='epoch_tuning/CNN/32_checkpoints'
 os.path.exists(checkpoint_dir)
 
 # Path to save and load Model
-model_file_h5 = "models/cnn_24_model.h5"
+model_file_h5 = "models/cnn_32_model.h5"
 
 # Path to Dataset
-input_file_train = 'processed_datasets/final_train.csv'
-input_file_test  = 'processed_datasets/final_test.csv'
+input_file_train = 'processed_datasets/final_32train.csv'
+input_file_test  = 'processed_datasets/final_32test.csv'
 
 # Convert letters to numbers
 def letter_to_index(letter):

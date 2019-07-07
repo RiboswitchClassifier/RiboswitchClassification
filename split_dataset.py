@@ -24,7 +24,7 @@ def Create_Data(Path):
     output = data["Type"]
     return data, output
 
-Path = 'processed_datasets/final.csv'
+Path = 'processed_datasets/final_32classes.csv'
 Data, Output = Create_Data(Path)
 
 
@@ -35,7 +35,7 @@ Data_train, Data_test, Output_train, Output_test = train_test_split(Data, Output
 print (Data_train['Type'].value_counts())
 print (Data_test['Type'].value_counts())
 
-file_name = 'processed_datasets/final_train.csv'
+file_name = 'processed_datasets/final_32train.csv'
 Data_train.to_csv(file_name, sep=',', encoding='utf-8', index=False)
-file_name = 'processed_datasets/final_test.csv'
+file_name = 'processed_datasets/final_32test.csv'
 Data_test.to_csv(file_name, sep=',', encoding='utf-8', index=False)
