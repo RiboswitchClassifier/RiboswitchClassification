@@ -26,7 +26,7 @@ x_test = scaler.transform(x_test)
 
 
 
-rf = RandomForestClassifier(n_estimators=3000,max_depth=100,n_jobs=-1)
+rf = RandomForestClassifier()
 rf.fit(x_train, y_train)
 
 y_pred_train = rf.predict(x_train)
