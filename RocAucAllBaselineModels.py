@@ -85,7 +85,9 @@ def calculate_roc(y_test, y_score, name,n_classes):
         '#aa65bb', '#c8a581', '#701f57','#f5aed0', '#7288ee', '#f6bcba',
         '#6d4018', '#44cbe9', '#f48a2a','#2efb0e', '#aeee77', '#0e4967',
         '#257d9d','#2c0ec4','#441401','#6b3ae9','#576377','#18713a',
-        '#357ad1','#5e8282','#fc0525','#120c63','#FF5733'
+        '#357ad1','#5e8282','#2F4F4F','#DCDCDC','#FFFAF0', '#C71585'
+        '#800000','#D2B48C','#fc0525','#120c63','#FF5733', '#4169E1'
+        '#8B008B', '#4169E1'
     ])
     each_class.append(round(roc_auc["micro"], 2))
     each_class.append(round(roc_auc["macro"], 2))
@@ -140,12 +142,12 @@ def construct_models(X_train, X_test, y_train, y_test, y_test_bin):
 def generate_roc(X_train, X_test, y_train, y_test, y_test_bin,n_classes):
     confusion_matrices={}
     classifiers = [
-        AdaBoostClassifier(),
+        AdaBoostClassifier(n_estimators=1000,learning_rate=1.0,algorithm='SAMME'),
         GaussianNB(),
-        KNeighborsClassifier(),
-        DecisionTreeClassifier(),
-        RandomForestClassifier(),
-        MLPClassifier()
+        KNeighborsClassifier(n_neighbors=8,leaf_size=1,weights='distance'),
+        DecisionTreeClassifier(max_depth=15,min_samples_leaf=8,min_samples_split=3),
+        RandomForestClassifier(n_estimators=1000,max_depth=80),
+        MLPClassifier(learning_rate='adaptive',alpha=0.01)
         ]
     names = ["AdaBoostClassifierModel","GaussianNBModel","KNeighborsClassifierModel","DecisionTreeClassifierModel","RandomForestClassifierModel","MLPClassifierModel"]
     overall = []
