@@ -8,7 +8,7 @@
               warm_start=False)
   Accuracy on Train Set
   1.0
-  MLP Classifier
+  Random Forest
   Accuracy on Test Set
   0.702108398551571
   Report
@@ -50,3 +50,54 @@
      micro avg       0.70      0.70      0.70     34244
      macro avg       0.85      0.57      0.64     34244
   weighted avg       0.73      0.70      0.69     34244
+2.
+classifier DecisionTreeClassifier(class_weight=None, criterion='gini', max_depth=None,
+            max_features=None, max_leaf_nodes=None,
+            min_impurity_decrease=0.0, min_impurity_split=None,
+            min_samples_leaf=1, min_samples_split=2,
+            min_weight_fraction_leaf=0.0, presort=False, random_state=None,
+            splitter='best')
+Accuracy on Train Set
+1.0
+Decision Tree
+Accuracy on Test Set
+0.4931070042968587
+Report
+              precision    recall  f1-score   support
+
+           0       0.57      0.54      0.55      3214
+           1       0.16      0.13      0.14       462
+           2       0.36      0.37      0.37      1171
+           3       0.53      0.53      0.53      8791
+           4       0.34      0.33      0.33       582
+           5       0.29      0.27      0.28       554
+           6       0.46      0.50      0.48      4218
+           7       0.52      0.52      0.52      9948
+           8       0.18      0.17      0.18       854
+           9       0.38      0.32      0.35       167
+          10       0.08      0.09      0.09       127
+          11       0.68      0.58      0.62       391
+          12       0.54      0.49      0.51      1412
+          13       0.60      0.58      0.59      1842
+          14       0.14      0.16      0.15       654
+          15       0.72      0.66      0.69       771
+          16       0.66      0.68      0.67       514
+          17       0.71      0.74      0.72       240
+          18       0.34      0.36      0.35       741
+          19       0.43      0.46      0.44      1567
+          20       0.69      0.59      0.63       185
+          21       0.35      0.29      0.32       148
+          22       0.43      0.44      0.44      2742
+          23       0.53      0.54      0.53       871
+          24       0.22      0.21      0.21       136
+          25       0.34      0.31      0.32       582
+          26       0.34      0.29      0.31       164
+          27       0.19      0.19      0.19       631
+          28       0.72      0.74      0.73       372
+          29       0.53      0.55      0.54      2855
+          30       0.35      0.29      0.32       463
+          31       0.44      0.40      0.42       573
+
+   micro avg       0.49      0.49      0.49     47942
+   macro avg       0.43      0.42      0.42     47942
+weighted avg       0.49      0.49      0.49     47942
