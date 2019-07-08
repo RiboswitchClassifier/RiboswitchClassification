@@ -107,7 +107,7 @@ def create_aoc_table(overall):
     df = pd.DataFrame(overall.T)
     print ("The generated dataframe")
     print (df)
-    writer = pd.ExcelWriter('sklearnAocValuesTable.xlsx')
+    writer = pd.ExcelWriter('sklearnAocValues32Table.xlsx')
     df.to_excel(writer,'sklearn')
     writer.save()
 
@@ -180,7 +180,7 @@ if __name__ == '__main__':
     #Exporting the CSV paths
     #Path = 'datasets/NN/16_riboswitches.csv'
     # Path = 'datasets/NN/24_riboswitches.csv'
-    Path = 'processed_datasets/final_train.csv'
+    Path = 'processed_datasets/final_32train.csv'
 
     #Call function to Load Dataset
     Data_train, Output_train = Create_Data(Path, Data_train, Output_train)
@@ -188,7 +188,7 @@ if __name__ == '__main__':
     #Converting the train data into Float
     Data_train, Output_train = Convert_to_Float(Data_train, Output_train)
 
-    Path = 'processed_datasets/final_test.csv'
+    Path = 'processed_datasets/final_32test.csv'
 
     #Call function to Load Dataset
     Data_test, Output_test = Create_Data(Path, Data_test, Output_test)
@@ -209,5 +209,5 @@ if __name__ == '__main__':
     Data_test = scaler.transform(Data_test)
 
     construct_models(Data_train, Data_test, Output_train, Output_test, bin_output)
-    total_class=get_totalclass('processed_datasets/final_test.csv')
+    total_class=get_totalclass('processed_datasets/final_32test.csv')
     generate_roc(Data_train, Data_test, Output_train, Output_test, bin_output,total_class)
