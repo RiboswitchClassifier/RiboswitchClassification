@@ -18,7 +18,7 @@ y_data = data.loc[:, "Type"]
 random_state = 100
 
 
-x_train, x_test, y_train, y_test = train_test_split(x_data, y_data, test_size=0.5, random_state=100,stratify=y_data)
+x_train, x_test, y_train, y_test = train_test_split(x_data, y_data, test_size=0.7, random_state=100,stratify=y_data)
 scaler = StandardScaler()
 scaler.fit(x_train)
 x_train = scaler.transform(x_train)
