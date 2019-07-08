@@ -149,3 +149,63 @@ Report
    micro avg       0.61      0.61      0.61     47942
    macro avg       0.68      0.48      0.55     47942
 weighted avg       0.63      0.61      0.61     47942
+
+
+
+
+
+
+
+
+classifier MLPClassifier(activation='relu', alpha=0.0001, batch_size='auto', beta_1=0.9,
+       beta_2=0.999, early_stopping=False, epsilon=1e-08,
+       hidden_layer_sizes=(100,), learning_rate='constant',
+       learning_rate_init=0.001, max_iter=200, momentum=0.9,
+       n_iter_no_change=10, nesterovs_momentum=True, power_t=0.5,
+       random_state=None, shuffle=True, solver='adam', tol=0.0001,
+       validation_fraction=0.1, verbose=False, warm_start=False)
+Accuracy on Train Set
+0.7687141049352672
+MLP Classifier
+Accuracy on Test Set
+0.7164699011305328
+
+Report
+              precision    recall  f1-score   support
+
+           0       0.76      0.78      0.77      3214
+           1       0.45      0.15      0.23       462
+           2       0.68      0.56      0.62      1171
+           3       0.72      0.73      0.73      8791
+           4       0.69      0.72      0.71       582
+           5       0.60      0.48      0.53       554
+           6       0.74      0.75      0.75      4218
+           7       0.68      0.77      0.72      9948
+           8       0.58      0.40      0.47       854
+           9       0.75      0.74      0.75       167
+          10       0.38      0.05      0.08       127
+          11       0.88      0.90      0.89       391
+          12       0.76      0.76      0.76      1412
+          13       0.78      0.78      0.78      1842
+          14       0.54      0.38      0.44       654
+          15       0.84      0.85      0.84       771
+          16       0.87      0.82      0.85       514
+          17       0.89      0.80      0.84       240
+          18       0.59      0.63      0.61       741
+          19       0.64      0.66      0.65      1567
+          20       0.98      0.89      0.93       185
+          21       0.70      0.31      0.43       148
+          22       0.70      0.66      0.68      2742
+          23       0.83      0.71      0.77       871
+          24       0.67      0.51      0.58       136
+          25       0.66      0.58      0.62       582
+          26       0.72      0.59      0.65       164
+          27       0.56      0.45      0.50       631
+          28       0.89      0.87      0.88       372
+          29       0.75      0.80      0.77      2855
+          30       0.69      0.65      0.67       463
+          31       0.75      0.79      0.77       573
+
+   micro avg       0.72      0.72      0.72     47942
+   macro avg       0.71      0.64      0.66     47942
+weighted avg       0.71      0.72      0.71     47942
