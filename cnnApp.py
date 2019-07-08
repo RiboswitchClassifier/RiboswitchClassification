@@ -31,7 +31,7 @@ import graphviz
 import functools
 
 # Hyperparameters and Parameters
-EPOCHS = 20 #  an arbitrary cutoff, generally defined as "one pass over the entire dataset", used to separate training into distinct phases, which is useful for logging and periodic evaluation.
+EPOCHS = 30 #  an arbitrary cutoff, generally defined as "one pass over the entire dataset", used to separate training into distinct phases, which is useful for logging and periodic evaluation.
 BATCH_SIZE = 128 # a set of N samples. The samples in a batch are processed` independently, in parallel. If training, a batch results in only one update to the model.
 ALLOWED_ALPHABETS = 'ATGCN' # Allowed Charecters
 CLASSES = 32 # Number of Classes to Classify -> Change this to 16 when needed
@@ -113,22 +113,25 @@ def generate_auc_roc(X_test, y_test):
     predicted_classes = model_loaded.predict_classes(X_test)
     print ("Predicted Classes")
     print (predicted_classes)
+    score, acc = model_loaded.evaluate(X_test, y_test,batch_size=BATCH_SIZE)
+    print (score)
+    print (acc)
     y_score = model_loaded.predict_proba(X_test)
     print ("Predicted Probabilities")
     print (y_score)
-    aucRoc.calculate_roc(y_test, y_score, "CnnClassifierModel")
+    aucRoc.calculate_roc(y_test, y_score, "CnnClassifierModel", CLASSES)
 
 if __name__ == '__main__':
     # Load Training Datasets
-    X_train, y_train = load_data(input_file_train,True)
-    X_train = np.expand_dims(X_train, axis=2)
+    # X_train, y_train = load_data(input_file_train,True)
+    # X_train = np.expand_dims(X_train, axis=2)
     # Load Test Datasets
     X_test, y_test = load_data(input_file_test, False)
     X_test = np.expand_dims(X_test, axis=2)
     # Create Model Structure
-    model = create_cnn(len(X_train[0]))
-    model.summary()
+    # model = create_cnn(len(X_train[0]))
+    # model.summary()
     # Train Model and Save it
-    model = train_model_and_save(X_train, y_train, model)
+    # model = train_model_and_save(X_train, y_train, model)
     # Generate Auc and Roc Curve
-    generate_auc_roc(X_test, y_test, CLASSES)
+    generate_auc_roc(X_test, y_test)

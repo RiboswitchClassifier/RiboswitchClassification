@@ -23,7 +23,7 @@ from openpyxl.workbook import Workbook
 #plt.figure()
 lw = 2
 
-def create_aoc_table(overall,name,n_classes=24):
+def create_aoc_table(overall,name):
     overall = np.array(overall)
     df = pd.DataFrame(overall.T)
     print ("The generated dataframe")
@@ -32,7 +32,7 @@ def create_aoc_table(overall,name,n_classes=24):
     df.to_excel(writer,name)
     writer.save() 
 
-def calculate_roc(y_test, y_score, name):
+def calculate_roc(y_test, y_score, name, n_classes=32):
     each_class = []
     unique_classes = list(set(y_test))
     unique_classes.sort()
@@ -77,12 +77,14 @@ def calculate_roc(y_test, y_score, name):
         '#aa65bb', '#c8a581', '#701f57','#f5aed0', '#7288ee', '#f6bcba',
         '#6d4018', '#44cbe9', '#f48a2a','#2efb0e', '#aeee77', '#0e4967',
         '#257d9d','#2c0ec4','#441401','#6b3ae9','#576377','#18713a',
-        '#357ad1','#5e8282','#fc0525','#120c63','#FF5733'
+        '#357ad1','#5e8282','#2F4F4F','#DCDCDC','#FFFAF0', '#C71585',
+        '#800000','#D2B48C','#fc0525','#120c63','#FF5733', '#4169E1',
+        '#8B008B', '#afeeee'
     ])
     each_class.append(round(roc_auc["micro"], 2))
     each_class.append(round(roc_auc["macro"], 2))
     for i, color in zip(range(n_classes), colors):
-        plt.plot(fpr[i], tpr[i], color=color, lw=lw,label='ROC curve of class {0} (area = {1:0.2f})'.format(i, roc_auc[i]))
+        plt.plot(fpr[i], tpr[i], color=color, lw=lw,label='ROC curve of class {0} (area = {1:0.2f})'.format(i+1, roc_auc[i]))
         each_class.append(round(roc_auc[i], 2))
 
     plt.plot([0, 1], [0, 1], 'k--', lw=lw)
@@ -93,4 +95,4 @@ def calculate_roc(y_test, y_score, name):
     plt.title('Receiver operating characteristic for multi-class data : ' + name)
     plt.legend(loc="lower right")
     plt.show()
-    create_aoc_table(each_class, name)
+    # create_aoc_table(each_class, name)

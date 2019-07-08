@@ -33,7 +33,7 @@ EPOCHS = 25 #  an arbitrary cutoff, generally defined as "one pass over the enti
 BATCH_SIZE = 128 # a set of N samples. The samples in a batch are processed` independently, in parallel. If training, a batch results in only one update to the model.
 ALLOWED_ALPHABETS = 'ATGCN' # Allowed Charecters 
 INPUT_DIM = len(ALLOWED_ALPHABETS) # a vocabulary of 5 words in case of genome sequence 'ATGCN'
-CLASSES = 24 # Number of Classes to Classify -> Change this to 16 when needed 
+CLASSES = 32 # Number of Classes to Classify -> Change this to 16 when needed 
 OUTPUT_DIM = 50 # Embedding output of Layer 1
 RNN_HIDDEN_DIM = 62 # Hidden Layers
 DROPOUT_RATIO = 0.2 # proportion of neurones not used for training
@@ -41,15 +41,15 @@ MAXLEN = 250 # cuts text after number of these characters in pad_sequences
 VALIDATION_SPLIT = 0.1
 
 # Create Directory for Checkpoints
-checkpoint_dir ='epoch_tuning/RNN/24_checkpoints'
+checkpoint_dir ='epoch_tuning/RNN/32_checkpoints'
 os.path.exists(checkpoint_dir)
 
 # Path to save and load Model 
-model_file_h5 = "models/rnn_24_model.h5"
+model_file_h5 = "models/rnn_32_model.h5"
 
 # Path to Dataset
-input_file_train = 'processed_datasets/final_train.csv'
-input_file_test  = 'processed_datasets/final_test.csv'
+input_file_train = 'processed_datasets/final_32train.csv'
+input_file_test  = 'processed_datasets/final_32test.csv'
 
 # Convert letters to numbers 
 def letter_to_index(letter):
@@ -116,10 +116,13 @@ def generate_auc_roc(X_test, y_test):
     predicted_classes = model_loaded.predict_classes(X_test)
     print ("Predicted Classes")
     print (predicted_classes)
+    score, acc = model_loaded.evaluate(X_test, y_test,batch_size=BATCH_SIZE)
+    print (score)
+    print (acc)
     y_score = model_loaded.predict_proba(X_test)
     print ("Predicted Probabilities") 
     print (y_score)
-    aucRoc.calculate_roc(y_test, y_score, "RnnClassifierModel")
+    aucRoc.calculate_roc(y_test, y_score, "RnnClassifierModel", CLASSES)
 
 if __name__ == '__main__':
     # Load Training Datasets
@@ -132,7 +135,7 @@ if __name__ == '__main__':
     # Train Model and Save it
     model = train_model_and_save(X_train, y_train, model)
     # Generate Auc and Roc Curve
-    generate_auc_roc(X_test, y_test, CLASSES)
+    # generate_auc_roc(X_test, y_test)
 
 
 

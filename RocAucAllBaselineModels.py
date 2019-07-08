@@ -86,13 +86,13 @@ def calculate_roc(y_test, y_score, name,n_classes):
         '#6d4018', '#44cbe9', '#f48a2a','#2efb0e', '#aeee77', '#0e4967',
         '#257d9d','#2c0ec4','#441401','#6b3ae9','#576377','#18713a',
         '#357ad1','#5e8282','#2F4F4F','#DCDCDC','#FFFAF0', '#C71585',
-        '#800000','#D2B48C','#fc0525','#120c63','#FF5733', '#4169E1'
-        '#8B008B', '#4169E1'
+        '#800000','#D2B48C','#fc0525','#120c63','#FF5733', '#4169E1',
+        '#8B008B', '#afeeee'
     ])
     each_class.append(round(roc_auc["micro"], 2))
     each_class.append(round(roc_auc["macro"], 2))
     for i, color in zip(range(n_classes), colors):
-        plt.plot(fpr[i], tpr[i], color=color, lw=lw,label='ROC curve of class {0} (area = {1:0.2f})'.format(i, roc_auc[i]))
+        plt.plot(fpr[i], tpr[i], color=color, lw=lw,label='ROC curve of class {0} (area = {1:0.2f})'.format(i+1, roc_auc[i]))
         each_class.append(round(roc_auc[i], 2))
     plt.plot([0, 1], [0, 1], 'k--', lw=lw)
     plt.xlim([-0.05, 1.0])
