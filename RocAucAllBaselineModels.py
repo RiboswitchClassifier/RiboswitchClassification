@@ -134,7 +134,7 @@ def construct_models(X_train, X_test, y_train, y_test, y_test_bin):
         print (name)
         print ("Accuracy on Test Set")
         print (model.score(X_test, y_test))
-        filename = 'pickled_models/' + name + '.pkl'
+        filename = '../pickled_models/' + name + '.pkl'
         pickle.dump(model, open(filename, 'wb'))
         print ("Report")
         print (classification_report(y_test,model.predict(X_test)))
@@ -153,7 +153,7 @@ def generate_roc(X_train, X_test, y_train, y_test, y_test_bin,n_classes):
     names = ["AdaBoostClassifierModel","GaussianNBModel","KNeighborsClassifierModel","DecisionTreeClassifierModel","RandomForestClassifierModel","MLPClassifierModel"]
     overall = []
     for clf,name in  zip(classifiers,names):
-        filename = 'pickled_models/' + name + '.pkl'
+        filename = '../pickled_models/' + name + '.pkl'
         model = pickle.load(open(filename, 'rb'))
         y_score = model.predict_proba(X_test)
         each_class = calculate_roc(y_test_bin, y_score, name,n_classes)
