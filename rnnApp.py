@@ -24,7 +24,7 @@ from sklearn.metrics import classification_report,confusion_matrix
 import os
 import pydot
 from keras.models import load_model
-import aucRoc
+import multiclassROC
 import graphviz
 import functools
 
@@ -122,7 +122,11 @@ def generate_auc_roc(X_test, y_test):
     y_score = model_loaded.predict_proba(X_test)
     print ("Predicted Probabilities") 
     print (y_score)
-    aucRoc.calculate_roc(y_test, y_score, "RnnClassifierModel", CLASSES)
+    unique_classes = list(set(y_test))
+    unique_classes.sort()
+    print (unique_classes)
+    bin_output = label_binarize(y_test, classes=unique_classes)
+    multiclassROC.calculate_roc(bin_output, y_score, "RnnClassifierModel", CLASSES)
 
 if __name__ == '__main__':
     # Load Training Datasets
@@ -135,7 +139,4 @@ if __name__ == '__main__':
     # Train Model and Save it
     model = train_model_and_save(X_train, y_train, model)
     # Generate Auc and Roc Curve
-    # generate_auc_roc(X_test, y_test)
-
-
-
+    generate_auc_roc(X_test, y_test)
