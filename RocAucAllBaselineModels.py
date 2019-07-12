@@ -82,7 +82,7 @@ def generate_roc(X_train, X_test, y_train, y_test, y_test_bin,n_classes):
         filename = '../pickled_models/' + name + '.pkl'
         model = pickle.load(open(filename, 'rb'))
         y_score = model.predict_proba(X_test)
-        each_class = calculate_roc(y_test_bin, y_score, name,n_classes)
+        multiclassROC.calculate_roc(y_test_bin, y_score, name,n_classes)
 
 def get_totalclass(f):
     file = open(f,'r')
