@@ -24,6 +24,7 @@ import pydot
 import graphviz
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report,confusion_matrix
+from sklearn.preprocessing import label_binarize
 from collections import Counter
 from keras.models import load_model
 import multiclassROC
