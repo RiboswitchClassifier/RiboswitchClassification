@@ -26,7 +26,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report,confusion_matrix
 from collections import Counter
 from keras.models import load_model
-import aucRoc
+import multiclassROC
 import graphviz
 import functools
 
@@ -119,7 +119,10 @@ def generate_auc_roc(X_test, y_test):
     y_score = model_loaded.predict_proba(X_test)
     print ("Predicted Probabilities")
     print (y_score)
-    aucRoc.calculate_roc(y_test, y_score, "CnnClassifierModel", CLASSES)
+    unique_classes = list(set(y_test))
+    unique_classes.sort()
+    bin_output = label_binarize(y_test, classes=unique_classes)
+    multiclassRoc.calculate_roc(bin_output, y_score, "CnnClassifierModel", CLASSES)
 
 if __name__ == '__main__':
     # Load Training Datasets
