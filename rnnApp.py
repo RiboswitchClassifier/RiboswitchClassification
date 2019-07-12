@@ -21,6 +21,7 @@ from keras.models import model_from_json
 from keras.utils import to_categorical
 from sklearn.utils import shuffle
 from sklearn.metrics import classification_report,confusion_matrix
+from sklearn.preprocessing import label_binarize
 import os
 import pydot
 from keras.models import load_model
