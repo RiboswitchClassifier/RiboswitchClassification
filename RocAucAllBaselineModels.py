@@ -20,10 +20,7 @@ from openpyxl.workbook import Workbook
 
 # import matplotlib.pyplot as #plt
 import pickle
-# import roc
-
-#plt.figure()
-lw = 2
+import multiclassROC
 
 #Load Dataset
 def Create_Data(Path, Data, Output):
@@ -42,77 +39,6 @@ def Convert_to_Float(Data, Output):
             Data[i][j]=float(Data[i][j])
         Output[i]= int(Output[i])
     return Data, Output
-
-
-def calculate_roc(y_test, y_score, name,n_classes):
-    each_class = []
-    fpr = dict()
-    tpr = dict()
-    roc_auc = dict()
-    for i in range(n_classes):
-        fpr[i], tpr[i], _ = roc_curve(y_test[:, i], y_score[:, i])
-        roc_auc[i] = auc(fpr[i], tpr[i])
-
-    # Compute micro-average ROC curve and ROC area
-    fpr["micro"], tpr["micro"], _ = roc_curve(y_test.ravel(), y_score.ravel())
-    roc_auc["micro"] = auc(fpr["micro"], tpr["micro"])
-
-    all_fpr = np.unique(np.concatenate([fpr[i] for i in range(n_classes)]))
-
-    # Then interpolate all ROC curves at this points
-    mean_tpr = np.zeros_like(all_fpr)
-    for i in range(n_classes):
-        mean_tpr += interp(all_fpr, fpr[i], tpr[i])
-
-    # Finally average it and compute AUC
-    mean_tpr /= n_classes
-
-    fpr["macro"] = all_fpr
-    tpr["macro"] = mean_tpr
-    roc_auc["macro"] = auc(fpr["macro"], tpr["macro"])
-
-    plt.plot(fpr["micro"], tpr["micro"],
-            label='micro-average ROC curve (area = {0:0.2f})'
-                ''.format(roc_auc["micro"]),
-            color='deeppink', linestyle=':', linewidth=4)
-
-    plt.plot(fpr["macro"], tpr["macro"],
-            label='macro-average ROC curve (area = {0:0.2f})'
-                ''.format(roc_auc["macro"]),
-            color='navy', linestyle=':', linewidth=4)
-
-    colors = cycle([
-        '#aa65bb', '#c8a581', '#701f57','#f5aed0', '#7288ee', '#f6bcba',
-        '#6d4018', '#44cbe9', '#f48a2a','#2efb0e', '#aeee77', '#0e4967',
-        '#257d9d','#2c0ec4','#441401','#6b3ae9','#576377','#18713a',
-        '#357ad1','#5e8282','#2F4F4F','#DCDCDC','#FFFAF0', '#C71585',
-        '#800000','#D2B48C','#fc0525','#120c63','#FF5733', '#4169E1','#afeeee',
-        '#8B008B'
-    ])
-    each_class.append(round(roc_auc["micro"], 2))
-    each_class.append(round(roc_auc["macro"], 2))
-    for i, color in zip(range(n_classes), colors):
-        plt.plot(fpr[i], tpr[i], color=color, lw=lw,label='ROC curve of class {0} (area = {1:0.2f})'.format(i+1, roc_auc[i]))
-        each_class.append(round(roc_auc[i], 2))
-    plt.plot([0, 1], [0, 1], 'k--', lw=lw)
-    plt.xlim([-0.05, 1.0])
-    plt.ylim([0.0, 1.05])
-    plt.xlabel('False Positive Rate')
-    plt.ylabel('True Positive Rate')
-    plt.title('Receiver operating characteristic for multi-class data : ' + name)
-    plt.legend(loc="lower right")
-    plt.show()
-    return each_class
-
-def create_aoc_table(overall):
-    overall = np.array(overall)
-    df = pd.DataFrame(overall.T)
-    print ("The generated dataframe")
-    print (df)
-    writer = pd.ExcelWriter('sklearnAocValues32Table.xlsx')
-    df.to_excel(writer,'sklearn')
-    writer.save()
-
 
 def construct_models(X_train, X_test, y_train, y_test, y_test_bin):
     confusion_matrices={}
@@ -157,9 +83,6 @@ def generate_roc(X_train, X_test, y_train, y_test, y_test_bin,n_classes):
         model = pickle.load(open(filename, 'rb'))
         y_score = model.predict_proba(X_test)
         each_class = calculate_roc(y_test_bin, y_score, name,n_classes)
-        overall.append(each_class)
-    create_aoc_table(overall)
-
 
 def get_totalclass(f):
     file = open(f,'r')
