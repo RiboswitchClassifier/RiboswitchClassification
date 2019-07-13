@@ -53,22 +53,6 @@ model_file_h5 = "models/rnn_32_model.h5"
 input_file_train = 'processed_datasets/final_32train.csv'
 input_file_test  = 'processed_datasets/final_32test.csv'
 
-# Load Data to be used for training and validation
-def load_data(input_file, flag ,test_split = 0.0, maxlen = MAXLEN):
-    df = pd.read_csv(input_file)
-    df['Sequence'] = df['Sequence'].apply(preprocess.character_mapping)
-    df['Sequence'] = df['Sequence'].apply(lambda x: [int(preprocess.letter_to_index(e)) for e in x])
-    # df = df.reindex(np.random.permutation(df.index))
-    X = np.array(df['Sequence'].values)
-    Y = np.array(df['Type'].values)
-    if flag:
-        global CLASSES
-        number_of_classes = np.unique(Y)
-        CLASSES = len(number_of_classes)
-        print (CLASSES)
-    return pad_sequences(X, maxlen=maxlen), Y
-
-
 # Create the RNN 
 def create_lstm(input_length, rnn_hidden_dim = RNN_HIDDEN_DIM, output_dim = OUTPUT_DIM, input_dim = INPUT_DIM, dropout = DROPOUT_RATIO):
     model = Sequential()
@@ -119,12 +103,12 @@ def generate_auc_roc(X_test, y_test):
 
 if __name__ == '__main__':
     # Load Training Datasets
-    X_train, y_train = load_data(input_file_train,True) 
+    X_train, y_train = preprocess.load_data(input_file_train,True) 
     # Create Model Structure
     model = create_lstm(len(X_train[0])) 
     model.summary()
     # Load Test Datasets   
-    X_test, y_test = load_data(input_file_test, False) 
+    X_test, y_test = preprocess.load_data(input_file_test, False) 
     # Train Model and Save it
     model = train_model_and_save(X_train, y_train, model)
     # Generate Auc and Roc Curve
