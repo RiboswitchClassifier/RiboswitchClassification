@@ -29,8 +29,7 @@ def check_fasta(a):
     for i in sequences:
         if not DNA.search(i):
             return True
-        else:
-            return False
+    return False
 
 
 def makecsv(file):
