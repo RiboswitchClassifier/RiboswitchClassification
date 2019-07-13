@@ -84,15 +84,7 @@ CNN
 Authors
 ------------
 
-    1. Keshav Aditya RP
-    2. Ramit Bharanikumar
-    3. Ashok Palaniappan
-
-Additional information
--------------------------
-For more information, please refer to our manuscript below.
-
-Premkumar KAR, Bharanikumar R, Palaniappan A. (2019) Classifying riboswitches with >99% accuracy. Microorganisms (to be submitted)
+Premkumar KeshavAdityaR, Bharanikumar Ramit, Palaniappan Ashok. (2019) Classifying riboswitches with >99% accuracy. Microorganisms (to be submitted)
 
 Please cite us if you use our software - thanks! 
 
