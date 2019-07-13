@@ -21,24 +21,7 @@ from openpyxl.workbook import Workbook
 # import matplotlib.pyplot as #plt
 import pickle
 import multiclassROC
-
-#Load Dataset
-def Create_Data(Path, Data, Output):
-    with open(Path) as csvfile:
-        Data_Path = list(csv.DictReader(csvfile))
-        for x in Data_Path:
-                #Creating the feature vector of mono and di nucleotides
-                Data.append([x["A"], x["T"], x["G"], x["C"],x["AA"], x["AC"], x["AG"], x["AT"],x["CA"], x["CC"], x["CG"], x["CT"],x["GA"], x["GC"], x["GG"], x["GT"],x["TA"], x["TC"], x["TG"], x["TT"]])
-                Output.append(x["Type"])
-        return Data, Output
-
-#Converting the values to Float for Mathematical purposes
-def Convert_to_Float(Data, Output):
-    for i in range(len(Data)):
-        for j in range(20):
-            Data[i][j]=float(Data[i][j])
-        Output[i]= int(Output[i])
-    return Data, Output
+import preprocess
 
 def construct_models(X_train, X_test, y_train, y_test, y_test_bin):
     confusion_matrices={}
@@ -84,17 +67,6 @@ def generate_roc(X_train, X_test, y_train, y_test, y_test_bin,n_classes):
         y_score = model.predict_proba(X_test)
         multiclassROC.calculate_roc(y_test_bin, y_score, name,n_classes)
 
-def get_totalclass(f):
-    file = open(f,'r')
-    next(file)
-    file=file.readlines()
-    class_num=0
-    for i in file:
-        i=i.strip("\n").split(",")
-        if int(i[1]) > class_num:
-            class_num = int(i[1])
-    return class_num + 1
-
 if __name__ == '__main__':
 
     Data_train = []
@@ -109,18 +81,18 @@ if __name__ == '__main__':
     Path = 'processed_datasets/final_32train.csv'
 
     #Call function to Load Dataset
-    Data_train, Output_train = Create_Data(Path, Data_train, Output_train)
+    Data_train, Output_train = preprocess.Create_Data(Path, Data_train, Output_train)
 
     #Converting the train data into Float
-    Data_train, Output_train = Convert_to_Float(Data_train, Output_train)
+    Data_train, Output_train = preprocess.Convert_to_Float(Data_train, Output_train)
 
     Path = 'processed_datasets/final_32test.csv'
 
     #Call function to Load Dataset
-    Data_test, Output_test = Create_Data(Path, Data_test, Output_test)
+    Data_test, Output_test = preprocess.Create_Data(Path, Data_test, Output_test)
 
     #Converting the train data into Float
-    Data_test, Output_test = Convert_to_Float(Data_test, Output_test)
+    Data_test, Output_test = preprocess.Convert_to_Float(Data_test, Output_test)
 
     unique_classes = list(set(Output_test))
     unique_classes.sort()
@@ -135,5 +107,5 @@ if __name__ == '__main__':
     Data_test = scaler.transform(Data_test)
 
     construct_models(Data_train, Data_test, Output_train, Output_test, bin_output)
-    total_class=get_totalclass('processed_datasets/final_32test.csv')
+    total_class=preprocess.get_totalclass('processed_datasets/final_32test.csv')
     generate_roc(Data_train, Data_test, Output_train, Output_test, bin_output,total_class)
