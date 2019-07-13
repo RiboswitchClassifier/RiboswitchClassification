@@ -79,3 +79,17 @@ CNN
     5. The train time is fairly short ( < 1 min - suitable for low spec systems )
  
     
+Authors
+------------
+
+    1. Keshav Aditya RP
+    2. Ramit Bharanikumar
+    3. Ashok Palaniappan
+
+Additional information
+-------------------------
+For more information, please refer to our manuscript below.
+
+Premkumar KAR, Bharanikumar R, Palaniappan A. (2019) Classifying riboswitches with >99% accuracy. Microorganisms (to be submitted)
+
+Please cite us if you use our software - thanks! 
