@@ -172,3 +172,17 @@ def character_mapping(x):
     x = functools.reduce(lambda a, kv: a.replace(*kv), repls.items(), x)
     return x
 
+def binarize(outputdata):
+    unique_classes = list(set(outputdata))
+    unique_classes.sort()
+    print (unique_classes)
+#    bin_output = label_binarize(Output_test, classes=unique_classes)
+    return label_binarize(outputdata, classes=unique_classes)
+
+#Preprocessing the data
+def scalingData(Data_train, Data_test=Data_train)
+    scaler = StandardScaler()
+    scaler.fit(Data_train)
+#    Data_train = scaler.transform(Data_train)
+#    Data_test = scaler.transform(Data_test)
+    return scaler.transform(Data_test)
