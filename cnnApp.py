@@ -30,6 +30,7 @@ from keras.models import load_model
 import multiclassROC
 import graphviz
 import functools
+import preprocess
 
 # Hyperparameters and Parameters
 EPOCHS = 30 #  an arbitrary cutoff, generally defined as "one pass over the entire dataset", used to separate training into distinct phases, which is useful for logging and periodic evaluation.
@@ -51,25 +52,11 @@ model_file_h5 = "models/cnn_32_model.h5"
 input_file_train = 'processed_datasets/final_32train.csv'
 input_file_test  = 'processed_datasets/final_32test.csv'
 
-# Convert letters to numbers
-def letter_to_index(letter):
-    _alphabet = 'ATGCN'
-    if letter not in _alphabet:
-        print ("Letter not present - Please Check the Dataset")
-        print (letter)
-    return next((i for i, _letter in enumerate(_alphabet) if _letter == letter), None)
-
-# Charecter mapping to acheive ATGCN
-def charecter_maping(x):
-    repls = {'R' : 'G', 'Y' : 'T', 'M' : 'A', 'K' : 'G', 'S' : 'G', 'W' : 'A', 'H' : 'A', 'B' : 'G', 'V' : 'G', 'D' : 'G'}
-    x = functools.reduce(lambda a, kv: a.replace(*kv), repls.items(), x)
-    return x
-
 # Load Data to be used for training and validation
 def load_data(input_file, flag, test_split = 0.0, maxlen = MAXLEN):
     df = pd.read_csv(input_file)
-    df['Sequence'] = df['Sequence'].apply(charecter_maping)
-    df['Sequence'] = df['Sequence'].apply(lambda x: [int(letter_to_index(e)) for e in x])
+    df['Sequence'] = df['Sequence'].apply(preprocess.character_mapping)
+    df['Sequence'] = df['Sequence'].apply(lambda x: [int(preprocess.letter_to_index(e)) for e in x])
     X = np.array(df['Sequence'].values)
     Y = np.array(df['Type'].values)
     if flag:
