@@ -1,7 +1,7 @@
 # RiboswitchClassification
 
 [riboflow](https://test.pypi.org/project/riboflow/) is a python package for classifying putative riboswitch sequences into one of 32 classes with > 99% accuracy. It is based on a [tensorflow](https://www.tensorflow.org) deep learning model. ``riboflow`` has been tested using ``Python 3.5.2``. 
-The pip package was derived from this source code. This source code of ``rnnApp.py`` and ``cnnApp.py`` can easily be altered to help acheive better accuracy when the riboswitch labels change or the number of labels increase / decrease when constructing the dataset, by changing the number of NN layers, hyperparameters.  
+The pip package was derived from this source code. This source code of ``rnnApp.py`` and ``cnnApp.py`` can easily be altered to help achieve better accuracy when the riboswitch labels change or the number of classes increase / decrease when constructing the dataset, by changing the number of NN layers, hyperparameters.  
 
 Datasets, Models, Utility Files
 ------------
