@@ -94,17 +94,10 @@ if __name__ == '__main__':
     #Converting the train data into Float
     Data_test, Output_test = preprocess.Convert_to_Float(Data_test, Output_test)
 
-    unique_classes = list(set(Output_test))
-    unique_classes.sort()
-    print (unique_classes)
-    bin_output = label_binarize(Output_test, classes=unique_classes)
+    bin_output = preprocess.binarize(Output_test)
 
-
-    #Preprocessing the data
-    scaler = StandardScaler()
-    scaler.fit(Data_train)
-    Data_train = scaler.transform(Data_train)
-    Data_test = scaler.transform(Data_test)
+    Data_train = preprocess.scalingData(Data_train)
+    Data_test = preprocess.scalingData(Data_train, Data_test)
 
     construct_models(Data_train, Data_test, Output_train, Output_test, bin_output)
     total_class=preprocess.get_totalclass('processed_datasets/final_32test.csv')
