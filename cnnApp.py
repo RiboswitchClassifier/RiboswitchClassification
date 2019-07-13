@@ -100,14 +100,14 @@ def generate_auc_roc(X_test, y_test):
 
 if __name__ == '__main__':
     # Load Training Datasets
-    # X_train, y_train = preprocess.load_data(input_file_train,True)
-    # X_train = np.expand_dims(X_train, axis=2)
+    X_train, y_train = preprocess.load_data(input_file_train,True)
+    X_train = np.expand_dims(X_train, axis=2)
     # Load Test Datasets
     X_test, y_test = preprocess.load_data(input_file_test, False)
     X_test = np.expand_dims(X_test, axis=2)
     # Create Model Structure
     model = create_cnn(len(X_train[0]))
-    # model.summary()
+    model.summary()
     # Train Model and Save it
     model = train_model_and_save(X_train, y_train, model)
     # Generate Auc and Roc Curve
