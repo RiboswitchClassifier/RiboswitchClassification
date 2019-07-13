@@ -95,10 +95,7 @@ def generate_auc_roc(X_test, y_test):
     y_score = model_loaded.predict_proba(X_test)
     print ("Predicted Probabilities") 
     print (y_score)
-    unique_classes = list(set(y_test))
-    unique_classes.sort()
-    print (unique_classes)
-    bin_output = label_binarize(y_test, classes=unique_classes)
+    bin_output = preprocess.binarize(y_test)
     multiclassROC.calculate_roc(bin_output, y_score, "RnnClassifierModel", CLASSES)
 
 if __name__ == '__main__':
