@@ -52,20 +52,6 @@ model_file_h5 = "models/cnn_32_model.h5"
 input_file_train = 'processed_datasets/final_32train.csv'
 input_file_test  = 'processed_datasets/final_32test.csv'
 
-# Load Data to be used for training and validation
-def load_data(input_file, flag, test_split = 0.0, maxlen = MAXLEN):
-    df = pd.read_csv(input_file)
-    df['Sequence'] = df['Sequence'].apply(preprocess.character_mapping)
-    df['Sequence'] = df['Sequence'].apply(lambda x: [int(preprocess.letter_to_index(e)) for e in x])
-    X = np.array(df['Sequence'].values)
-    Y = np.array(df['Type'].values)
-    if flag:
-        global CLASSES
-        number_of_classes = np.unique(Y)
-        CLASSES = len(number_of_classes)
-        print (CLASSES)
-    return pad_sequences(X, maxlen=maxlen), Y
-
 # Create the CNN
 def create_cnn(input_length, dropout_ratio = DROPOUT_RATIO):
     model = Sequential()
@@ -114,10 +100,10 @@ def generate_auc_roc(X_test, y_test):
 
 if __name__ == '__main__':
     # Load Training Datasets
-    # X_train, y_train = load_data(input_file_train,True)
+    # X_train, y_train = preprocess.load_data(input_file_train,True)
     # X_train = np.expand_dims(X_train, axis=2)
     # Load Test Datasets
-    X_test, y_test = load_data(input_file_test, False)
+    X_test, y_test = preprocess.load_data(input_file_test, False)
     X_test = np.expand_dims(X_test, axis=2)
     # Create Model Structure
     model = create_cnn(len(X_train[0]))
