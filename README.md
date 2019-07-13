@@ -25,9 +25,9 @@ Datasets, Models, Utility Files
 
     Contains the rnn and cnn model's in h5 format 
     
-5.split_dataset.py
+5.preprocess.py
 
-    Used to generate final_train.csv and final_test.csv which is used by baseModels.py, rnnApp.py, cnnApp.py 
+    Contains various utilities for train:test splitting of the dataset, loading the datasets and other preprocessing of the data. Could be used to generate -mer frequencies, final_train.csv, final_test.csv and used for data preprocessing by all the models (i.e, both base and deep learning models: baseModels.py, rnnApp.py and cnnApp.py) 
     
 6.multiclassROC.py
 
