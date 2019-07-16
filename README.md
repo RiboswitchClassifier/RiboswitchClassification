@@ -35,7 +35,7 @@ Datasets, Models, Utility Files
     
     Implements a routine to enable dynamic deep learning for new riboswitch classes. Could be used on riboswitch fasta files of any number of classes to generate the equivalent processed csv files having the sequence and k-mer (for now, mono and di-) frequencies (this file can be used by baseModels.py, rnnApp.py, cnnApp.py for training purposes) 
     
-Base Models Constructed using Sklearn Library
+sklearn Base Models 
 ------------
 
     > python3  baseModels.py
@@ -52,24 +52,24 @@ Base Models Constructed using Sklearn Library
     3. The MLPClassifier() proved to be the best among the chosen sklearn classifiers and hence Neural Networks (CNN and RNN) 
        were explored further to acheive greater accuracy.
  
- RNN
+ keras.tf RNN
 ------------
 
     > python3  rnnApp.py
     
-    1. Create's a .h5 RNN Model
+    1. Creates a .h5 RNN Model using tensorflow on keras
     2. The model is used on the test set to obtain accuracy, generate a classication report and the ROC-AUC values for each 
        of the 32 classes. 
     3. Provides an Accuracy of 99% on the test set.
     4. New layers and hyperparameter values can be added or changed when dealing with a dataset having different number of classes
     5. The train time is fairly long ( in the magnitude of hours - suitable for system with high specs )
     
-CNN
+keras.tf CNN
 ------------
 
     > python3  cnnApp.py
     
-    1. Create's a .h5 CNN Model
+    1. Creates a .h5 CNN Model using tensorflow on keras
     2. The model is used on the test set to obtain accuracy, generate a classication report and the ROC-AUC values for each 
        of the 32 classes. 
     3. Provides an Accuracy of 97% on the test set.
@@ -82,7 +82,7 @@ Authors
 
 Premkumar KeshavAditya R, Bharanikumar Ramit, Palaniappan Ashok. (2019) Classifying riboswitches with >99% accuracy. Microorganisms (to be submitted)
 
-  * [Keshav Aditya R.P](https://keshavadityarp.github.io)
+  * Keshav Aditya R.P
     - [Github](https://github.com/KeshavAdityaRP)
     - [LinkedIn](https://www.linkedin.com/in/keshavadityarp/)
   * Ramit Bharanikumar
