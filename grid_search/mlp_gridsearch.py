@@ -50,7 +50,7 @@ param_grid = {
 #,2000
 #,70
 
-grid_search = GridSearchCV(mlp, param_grid=param_grid,n_jobs=-1,cv=2)
+grid_search = GridSearchCV(mlp, param_grid=param_grid,n_jobs=-1,cv=10)
 
 grid_search.fit(x_train,y_train)
 print(grid_search.best_params_)
