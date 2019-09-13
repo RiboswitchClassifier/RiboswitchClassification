@@ -16,8 +16,8 @@ Datasets, Models, Utility Files
 2.processed_datasets
 
     a. final_32classes.csv                --> Original 32 riboswitches Dataset cleaned and Frequencies calculated
-    b. final_32train.csv          --> 90% of each riboswitches label in the final_32classes.csv
-    c. final_32test.csv           --> Remaining 10% of each riboswitches label in the final_32classes.csv
+    b. final_32train.csv          --> 90% of each riboswitch class's instances in the final_32classes.csv
+    c. final_32test.csv           --> Remaining 10% of each riboswitch class's instances in the final_32classes.csv
     
 3.models
 
@@ -93,7 +93,7 @@ Premkumar KeshavAditya R, Bharanikumar Ramit, Palaniappan Ashok. (2019) Classify
     - [Github](https://github.com/apalania)
     - [LinkedIn](https://www.linkedin.com/in/ashokpalaniappan/)
 
-Please cite us if you use our software - thanks! 
+Please cite if you use our software.
 
 Copyright & License
 -------------------
