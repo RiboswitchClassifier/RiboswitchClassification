@@ -17,6 +17,7 @@ import numpy as np
 import pandas as pd
 from scipy import interp
 from openpyxl.workbook import Workbook
+from sklearn.preprocessing import StandardScaler, label_binarize
 
 # import matplotlib.pyplot as #plt
 import pickle
@@ -96,8 +97,13 @@ if __name__ == '__main__':
 
     bin_output = preprocess.binarize(Output_test)
 
-    Data_train = preprocess.scalingData(Data_train)
-    Data_test = preprocess.scalingData(Data_train, Data_test)
+
+
+    scaler = StandardScaler()
+    scaler.fit(Data_train)
+    Data_train = scaler.transform(Data_train)
+    Data_test = scaler.transform(Data_test)
+
 
     construct_models(Data_train, Data_test, Output_train, Output_test, bin_output)
     total_class=preprocess.get_totalclass('processed_datasets/final_32test.csv')

@@ -161,7 +161,7 @@ def get_totalclass(f):
             class_num = int(i[1])
     return class_num + 1
 
-# Convert letters to numbers 
+# Convert letters to numbers
 def letter_to_index(letter):
     if letter not in ALLOWED_ALPHABETS:
         print ("Letter not present")
@@ -180,13 +180,3 @@ def binarize(outputdata):
     print (unique_classes)
 #    bin_output = label_binarize(Output_test, classes=unique_classes)
     return label_binarize(outputdata, classes=unique_classes)
-
-#Preprocessing the data
-def scalingData(Data_train, Data_test=None):
-    if not Data_test:
-        Data_test=Data_train
-    scaler = StandardScaler()
-    scaler.fit(Data_train)
-#    Data_train = scaler.transform(Data_train)
-#    Data_test = scaler.transform(Data_test)
-    return scaler.transform(Data_test)
