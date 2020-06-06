@@ -34,7 +34,7 @@ def check_fasta(a):
 
 def makecsv(file):
     input_file = open(file, 'r')
-    csvfiles = 'original_datasets/24_riboswitches_new_csv'
+    csvfiles = 'original_datasets/32_riboswitches_new_csv'
     output_file = open("{}/{}.csv".format(csvfiles,file.split(".")[0]),'w')
 
     output_file.write('Gene,A,T,G,C,AA,AC,AG,AT,CA,CC,CG,CT,GA,GC,GG,GT,TA,TC,TG,TT\n')
@@ -97,7 +97,7 @@ def main():
     else:
         if args.fa is not None:
             makecsv(args.fa)
-            csvfiles = 'original_datasets/24_riboswitches_new_csv'
+            csvfiles = 'original_datasets/32_riboswitches_new_csv'
             csv="{}.csv".format(args.fa.split(".")[0])
             final_csv="processed_datasets/final_dynamic.csv"
             output = open(final_csv,'r')
@@ -117,7 +117,7 @@ def main():
         if args.d is not None:
             for eachfile in os.listdir(args.d):
                 makecsv(eachfile)
-                csvfiles = 'original_datasets/24_riboswitches_new_csv'
+                csvfiles = 'original_datasets/32_riboswitches_new_csv'
                 csv="{}.csv".format(args.fa.split(".")[0])
                 final_csv="processed_datasets/final_dynamic.csv"
                 output = open(final_csv,'r')
