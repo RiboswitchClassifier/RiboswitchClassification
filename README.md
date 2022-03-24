@@ -1,7 +1,10 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3334316.svg)](https://doi.org/10.5281/zenodo.3334316)
 
 
-<script type="text/javascript" src="https://d1bxh8uas1mnw7.cloudfront.net/assets/embed.js"></script><div class="altmetric-embed" data-badge-type="donut" data-altmetric-id="85787699"></div>
+<script type="text/javascript" src="https://d1bxh8uas1mnw7.cloudfront.net/assets/embed.js">
+</script>
+<div class="altmetric-embed" data-badge-type="donut" data-altmetric-id="85787699">
+</div>
 
 
 # RiboswitchClassification
