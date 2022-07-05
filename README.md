@@ -77,10 +77,16 @@ keras.tf CNN
     5. The train time is fairly short ( < 1 min - suitable for low spec systems )
  
     
-Authors
+Citation
 ----------
 
-Premkumar KeshavAditya R, Bharanikumar Ramit, Palaniappan Ashok. (2019) Classifying riboswitches with >99% accuracy. Microorganisms (to be submitted)
+Please cite us if you use our methods and tools.
+
+Premkumar KAR, Bharanikumar R, Palaniappan A. (2020) Riboflow: using deep learning to classify riboswitches with ~99% accuracy. Frontiers in Biotechnology and Bioengineering 8: 808. DOI: 10.3389/fbioe.2020.00808 
+
+
+Authors
+----------
 
   * Keshav Aditya R.P
     - [Github](https://github.com/KeshavAdityaRP)
@@ -89,11 +95,11 @@ Premkumar KeshavAditya R, Bharanikumar Ramit, Palaniappan Ashok. (2019) Classify
     - [Github](https://github.com/ramit29)
     - [LinkedIn](https://www.linkedin.com/in/ramit-bharanikumar-12a014114/)
   * Ashok Palaniappan
-    - [Senior Assistant Professor](http://www.sastra.edu/staffprofiles/schools/scbt.php?staff_id=C2164)
+    - [Associate Professor](http://www.sastra.edu/staffprofiles/schools/scbt.php?staff_id=C2164)
     - [Github](https://github.com/apalania)
     - [LinkedIn](https://www.linkedin.com/in/ashokpalaniappan/)
 
-Please cite if you use our software.
+
 
 Copyright & License
 -------------------
