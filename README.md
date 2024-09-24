@@ -80,18 +80,16 @@ keras.tf CNN
 Citation
 ----------
 
-Please cite us if you use our methods and tools.
-
-Premkumar KAR, Bharanikumar R, Palaniappan A. (2020) Riboflow: using deep learning to classify riboswitches with ~99% accuracy. *Frontiers in Biotechnology and Bioengineering* 8: 808. DOI: [10.3389/fbioe.2020.00808](https://doi.org/10.3389/fbioe.2020.00808) 
+Bharanikumar R, Premkumar KAR, Palaniappan A<sup>#</sup>. (2020) Riboflow: using deep learning to classify riboswitches with ~99% accuracy. *Frontiers in Biotechnology and Bioengineering* 8: 808. DOI: [10.3389/fbioe.2020.00808](https://doi.org/10.3389/fbioe.2020.00808) 
 
 
 Authors
 ----------
 
-  * Keshav Aditya R.P
+  * Keshav Aditya R.P*
     - [Github](https://github.com/KeshavAdityaRP)
     - [LinkedIn](https://www.linkedin.com/in/keshavadityarp/)
-  * Ramit Bharanikumar
+  * Ramit Bharanikumar*
     - [Github](https://github.com/ramit29)
     - [LinkedIn](https://www.linkedin.com/in/ramit-bharanikumar-12a014114/)
   * Ashok Palaniappan
