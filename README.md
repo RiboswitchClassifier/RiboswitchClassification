@@ -82,7 +82,7 @@ Citation
 
 Please cite us if you use our methods and tools.
 
-Premkumar KAR, Bharanikumar R, Palaniappan A. (2020) Riboflow: using deep learning to classify riboswitches with ~99% accuracy. Frontiers in Biotechnology and Bioengineering 8: 808. DOI: 10.3389/fbioe.2020.00808 
+Premkumar KAR, Bharanikumar R, Palaniappan A. (2020) Riboflow: using deep learning to classify riboswitches with ~99% accuracy. *Frontiers in Biotechnology and Bioengineering* 8: 808. DOI: [10.3389/fbioe.2020.00808](https://doi.org/10.3389/fbioe.2020.00808) 
 
 
 Authors
